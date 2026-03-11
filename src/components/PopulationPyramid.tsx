@@ -48,6 +48,53 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   const femaleTotal = r2(draft.reduce((s, g) => s + g.femalePercent, 0));
   const totalPercent = r2(maleTotal + femaleTotal);
 
+  const normalizeDraft = (groups: AgeGroupGender[]) => {
+    const values = groups.flatMap((g) => [g.malePercent, g.femalePercent]).map((v) => Math.max(0, v));
+    let sum = values.reduce((s, v) => s + v, 0);
+    if (sum <= 0) {
+      const reset = groups.map((g, i) => ({
+        ...g,
+        malePercent: i === 0 ? 50 : 0,
+        femalePercent: i === 0 ? 50 : 0,
+      }));
+      return reset;
+    }
+
+    const scale = 100 / sum;
+    const scaled = groups.map((g) => ({
+      ...g,
+      malePercent: r2(Math.max(0, g.malePercent * scale)),
+      femalePercent: r2(Math.max(0, g.femalePercent * scale)),
+    }));
+
+    const roundedSum = r2(
+      scaled.reduce((s, g) => s + g.malePercent + g.femalePercent, 0)
+    );
+    let residual = r2(100 - roundedSum);
+    if (Math.abs(residual) < 0.01) return scaled;
+
+    const candidates = scaled
+      .map((g, i) => ({
+        i,
+        total: g.malePercent + g.femalePercent,
+      }))
+      .sort((a, b) => b.total - a.total);
+
+    for (const c of candidates) {
+      if (Math.abs(residual) < 0.01) break;
+      const target = scaled[c.i];
+      const add = residual >= 0 ? residual : Math.max(residual, -target.malePercent - target.femalePercent);
+      if (add === 0) continue;
+      const half = r2(add / 2);
+      const newMale = r2(Math.max(0, target.malePercent + half));
+      const newFemale = r2(Math.max(0, target.femalePercent + (add - half)));
+      residual = r2(residual - (newMale + newFemale - target.malePercent - target.femalePercent));
+      scaled[c.i] = { ...target, malePercent: newMale, femalePercent: newFemale };
+    }
+
+    return scaled;
+  };
+
   const redistributeValues = useCallback(
     (index: number, side: "male" | "female", newValue: number) => {
       const field = side === "male" ? "malePercent" : "femalePercent";
@@ -61,7 +108,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
       const remaining = 100 - clampedValue;
       const scale = remaining / otherTotal;
 
-      const newDraft = draft.map((group, i) => {
+      const scaledDraft = draft.map((group, i) => {
         if (i === index) {
           return { ...group, [field]: clampedValue };
         }
@@ -72,21 +119,9 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
         };
       });
 
-      // Fix rounding residual onto the last bar to hit exactly 100
-      const totalAfter = r2(
-        newDraft.reduce((sum, g) => sum + g.malePercent + g.femalePercent, 0)
-      );
-      const residual = r2(100 - totalAfter);
-      if (Math.abs(residual) > 0) {
-        const lastIndex = index === newDraft.length - 1 ? newDraft.length - 2 : newDraft.length - 1;
-        newDraft[lastIndex] = {
-          ...newDraft[lastIndex],
-          malePercent: r2(newDraft[lastIndex].malePercent + residual / 2),
-          femalePercent: r2(newDraft[lastIndex].femalePercent + residual / 2),
-        };
-      }
+      const normalizedDraft = normalizeDraft(scaledDraft);
 
-      setDraft(newDraft);
+      setDraft(normalizedDraft);
       setError(null);
     },
     [draft]
