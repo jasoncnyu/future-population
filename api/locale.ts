@@ -13,7 +13,6 @@ const supportedLocales = [
   "fi",
   "is",
   "nb",
-  "nn",
   "pl",
   "cs",
   "sk",
@@ -25,12 +24,8 @@ const supportedLocales = [
   "el",
   "tr",
   "he",
-  "ga",
-  "lb",
-  "rm",
   "ja",
   "ko",
-  "mi",
 ] as const;
 
 type Locale = (typeof supportedLocales)[number];
@@ -78,7 +73,7 @@ type CountryCode =
 const countryDefaultLocale: Record<CountryCode, Locale> = {
   AU: "en",
   AT: "de",
-  BE: "nl",
+  BE: "fr",
   CA: "en",
   CL: "es",
   CO: "es",
@@ -99,7 +94,7 @@ const countryDefaultLocale: Record<CountryCode, Locale> = {
   KR: "ko",
   LV: "lv",
   LT: "lt",
-  LU: "lb",
+  LU: "fr",
   MX: "es",
   NL: "nl",
   NZ: "en",
@@ -129,7 +124,6 @@ const languageDefaultCountry: Record<Locale, CountryCode> = {
   fi: "FI",
   is: "IS",
   nb: "NO",
-  nn: "NO",
   pl: "PL",
   cs: "CZ",
   sk: "SK",
@@ -141,12 +135,8 @@ const languageDefaultCountry: Record<Locale, CountryCode> = {
   el: "GR",
   tr: "TR",
   he: "IL",
-  ga: "IE",
-  lb: "LU",
-  rm: "CH",
   ja: "JP",
   ko: "KR",
-  mi: "NZ",
 };
 
 const oecdCountries = new Set(Object.keys(countryDefaultLocale));
@@ -159,13 +149,22 @@ function normalizeLocale(input?: string | null): Locale | null {
   return supportedLocales.includes(base as Locale) ? (base as Locale) : null;
 }
 
-function parseAcceptLanguage(header: string | null): Locale | null {
+function parseAcceptLanguage(
+  header: string | null
+): { locale: Locale; region?: CountryCode } | null {
   if (!header) return null;
   const parts = header.split(",").map((part) => part.trim());
   for (const part of parts) {
-    const lang = part.split(";")[0];
-    const normalized = normalizeLocale(lang);
-    if (normalized) return normalized;
+    const lang = part.split(";")[0]?.trim();
+    if (!lang) continue;
+    const [language, region] = lang.toLowerCase().split("-");
+    const normalized = normalizeLocale(language);
+    if (!normalized) continue;
+    const regionCode = region?.toUpperCase();
+    if (regionCode && oecdCountries.has(regionCode)) {
+      return { locale: normalized, region: regionCode as CountryCode };
+    }
+    return { locale: normalized };
   }
   return null;
 }
@@ -181,11 +180,28 @@ function detectCountry(req: Request): CountryCode | null {
 
 export default function handler(req: Request) {
   const url = new URL(req.url);
-  const country = detectCountry(req);
-  const localeFromCountry = country ? countryDefaultLocale[country] : null;
-  const localeFromLang = parseAcceptLanguage(req.headers.get("accept-language"));
-  const locale = localeFromCountry ?? localeFromLang ?? "en";
-  const resolvedCountry = country ?? languageDefaultCountry[locale];
+  const countryFromCf = detectCountry(req);
+  const parsed = parseAcceptLanguage(req.headers.get("accept-language"));
+
+  let resolvedCountry: CountryCode | null = null;
+  let locale: Locale = "en";
+
+  if (parsed?.region) {
+    resolvedCountry = parsed.region;
+    locale = parsed.locale ?? countryDefaultLocale[resolvedCountry];
+  } else if (parsed?.locale) {
+    resolvedCountry = countryFromCf ?? languageDefaultCountry[parsed.locale];
+    locale = parsed.locale;
+  } else if (countryFromCf) {
+    resolvedCountry = countryFromCf;
+    locale = countryDefaultLocale[countryFromCf];
+  } else {
+    resolvedCountry = languageDefaultCountry[locale];
+  }
+
+  if (!supportedLocales.includes(locale)) {
+    locale = countryDefaultLocale[resolvedCountry ?? "US"];
+  }
 
   url.pathname = `/${locale}`;
   url.search = "";
@@ -193,7 +209,7 @@ export default function handler(req: Request) {
   const res = Response.redirect(url.toString(), 302);
   res.headers.set(
     "Set-Cookie",
-    `fpp-country=${resolvedCountry}; Path=/; Max-Age=2592000; SameSite=Lax`
+    `fpp-country=${resolvedCountry ?? "US"}; Path=/; Max-Age=2592000; SameSite=Lax`
   );
   res.headers.append(
     "Set-Cookie",

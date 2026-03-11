@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from "
 import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Theory from "./pages/Theory";
 import { LocaleProvider } from "@/lib/locale-context";
 import { defaultLocale, normalizeLocale, type Locale } from "@/lib/i18n";
 import { detectLocaleAndCountry, storeCountry } from "@/lib/geo";
@@ -48,6 +50,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<LocaleRedirect />} />
           <Route path="/:locale" element={<LocaleGate element={<Index />} />} />
+          <Route path="/:locale/theory" element={<LocaleGate element={<Theory />} />} />
+          <Route path="/:locale/about" element={<LocaleGate element={<About />} />} />
           <Route path="/:locale/*" element={<LocaleGate element={<NotFound />} />} />
           <Route path="*" element={<LocaleRedirect />} />
         </Routes>

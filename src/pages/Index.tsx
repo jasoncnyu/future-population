@@ -4,6 +4,7 @@ import SimulatorChart from "@/components/SimulatorChart";
 import SimulatorSummary from "@/components/SimulatorSummary";
 import { simulatePopulation, type FertilityChangeEvent } from "@/lib/population-simulator";
 import PopulationPyramid, { DEFAULT_AGE_GROUPS, type AgeGroupGender } from "@/components/PopulationPyramid";
+import AppHeader from "@/components/AppHeader";
 import { useLocale } from "@/lib/locale-context";
 import { localeLabel, t, type Locale } from "@/lib/i18n";
 import { OECD_COUNTRIES, getCountryName, type CountryCode } from "@/lib/countries";
@@ -84,17 +85,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border px-4 py-4 lg:px-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{t(locale, "app.title")}</h1>
-            <p className="text-sm text-muted-foreground mt-1">{t(locale, "app.subtitle")}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {t(locale, "header.source")}
-              {dataYear ? ` · ${t(locale, "header.dataYear", { year: dataYear })}` : ""}
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <AppHeader
+        title={t(locale, "app.title")}
+        subtitle={t(locale, "app.subtitle")}
+        meta={`${t(locale, "header.source")}${dataYear ? ` · ${t(locale, "header.dataYear", { year: dataYear })}` : ""}`}
+        right={
+          <>
             <div className="min-w-[180px]">
               <Label className="text-xs">{t(locale, "header.language")}</Label>
               <Select value={locale} onValueChange={(v) => setLocale(v as Locale)}>
@@ -130,9 +126,9 @@ const Index = () => {
                 <p className="text-[11px] text-muted-foreground mt-1">{t(locale, "misc.loading")}</p>
               )}
             </div>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
       <main className="p-4 lg:p-8 space-y-6">
         <SimulatorSummary data={data} initialPopulation={initialPopulation} locale={locale} />

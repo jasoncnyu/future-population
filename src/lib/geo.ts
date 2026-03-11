@@ -39,15 +39,23 @@ export function detectCountryFromCookie(): CountryCode | null {
   return null;
 }
 
-export function detectLocaleFromNavigator(): Locale {
+function parseNavigatorLanguage(): { locale: Locale; region?: CountryCode } | null {
   const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
   for (const lang of languages) {
-    const normalized = normalizeLocale(lang);
-    if (normalized && supportedLocales.includes(normalized)) {
-      return normalized;
+    const [language, region] = lang.toLowerCase().split("-");
+    const normalized = normalizeLocale(language);
+    if (!normalized || !supportedLocales.includes(normalized)) continue;
+    const regionCode = region?.toUpperCase();
+    if (regionCode && countryByCode.has(regionCode as CountryCode)) {
+      return { locale: normalized, region: regionCode as CountryCode };
     }
+    return { locale: normalized };
   }
-  return defaultLocale;
+  return null;
+}
+
+export function detectLocaleFromNavigator(): Locale {
+  return parseNavigatorLanguage()?.locale ?? defaultLocale;
 }
 
 export function detectCountryFromLanguage(locale: Locale): CountryCode {
@@ -57,12 +65,13 @@ export function detectCountryFromLanguage(locale: Locale): CountryCode {
 export function detectLocaleAndCountry(): { locale: Locale; country: CountryCode } {
   const storedCountry = getStoredCountry();
   const cookieCountry = detectCountryFromCookie();
-  const locale = detectLocaleFromNavigator();
+  const parsed = parseNavigatorLanguage();
+  const locale = parsed?.locale ?? defaultLocale;
 
-  const country =
-    cookieCountry ??
-    storedCountry ??
-    detectCountryFromLanguage(locale);
+  if (parsed?.region) {
+    return { locale, country: parsed.region };
+  }
 
+  const country = cookieCountry ?? storedCountry ?? detectCountryFromLanguage(locale);
   return { locale, country };
 }
