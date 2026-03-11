@@ -15,6 +15,20 @@ export default function Footer() {
           <Github className="h-3.5 w-3.5" />
           GitHub
         </a>
+        {" · "}
+        <a
+          href="https://leanvibe.io/vibe/future-population-simulator-mmmbonpo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-foreground transition-colors hover:text-primary"
+        >
+          <img
+            src="https://leanvibe.io/favicon-32x32.png"
+            alt=""
+            className="h-3.5 w-3.5 rounded-sm"
+          />
+          Listed on LeanVibe
+        </a>
       </p>
     </footer>
   );
