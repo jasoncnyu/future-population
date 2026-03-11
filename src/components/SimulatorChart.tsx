@@ -31,6 +31,9 @@ export default function SimulatorChart({
   selectedYear,
   onSelectYear,
 }: SimulatorChartProps) {
+  const rangeRef = useRef<{ min: number; max: number; sign: number } | null>(null);
+  const tfrRangeRef = useRef<number | null>(null);
+
   if (data.length === 0) return null;
 
   const maxPop = Math.max(...data.map((d) => d.population));
@@ -38,7 +41,6 @@ export default function SimulatorChart({
   const popPadding = (maxPop - minPop) * 0.1 || maxPop * 0.1;
   const trendSign = Math.sign(data[data.length - 1].population - data[0].population);
 
-  const rangeRef = useRef<{ min: number; max: number; sign: number } | null>(null);
   if (!rangeRef.current || rangeRef.current.sign !== trendSign) {
     rangeRef.current = {
       min: Math.max(0, minPop - popPadding),
@@ -58,7 +60,6 @@ export default function SimulatorChart({
   ];
 
   const tfrMax = Math.max(...data.map((d) => d.tfr));
-  const tfrRangeRef = useRef<number | null>(null);
   if (!tfrRangeRef.current) {
     tfrRangeRef.current = Math.max(2.5, tfrMax + 0.2);
   } else if (tfrMax > tfrRangeRef.current) {

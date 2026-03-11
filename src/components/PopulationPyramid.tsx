@@ -70,7 +70,7 @@ export default function PopulationPyramid({
 
   const normalizeDraft = (groups: AgeGroupGender[]) => {
     const values = groups.flatMap((g) => [g.malePercent, g.femalePercent]).map((v) => Math.max(0, v));
-    let sum = values.reduce((s, v) => s + v, 0);
+    const sum = values.reduce((s, v) => s + v, 0);
     if (sum <= 0) {
       const reset = groups.map((g, i) => ({
         ...g,
