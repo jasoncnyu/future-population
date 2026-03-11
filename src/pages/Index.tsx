@@ -8,7 +8,7 @@ import { useLocale } from "@/lib/locale-context";
 import { localeLabel, t, type Locale } from "@/lib/i18n";
 import { OECD_COUNTRIES, getCountryName, type CountryCode } from "@/lib/countries";
 import { detectLocaleAndCountry, storeCountry } from "@/lib/geo";
-import { buildAgeGroupsFromShares, getCountryData, getDefaultCountryData } from "@/lib/country-data";
+import { getCountryData, getDefaultCountryData } from "@/lib/country-data";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
@@ -33,13 +33,7 @@ const Index = () => {
     const fallback = getDefaultCountryData(dataCountry);
     setInitialPopulation(fallback.population);
     setInitialTfr(fallback.tfr);
-    setAgeGroups(
-      buildAgeGroupsFromShares(
-        fallback.ageShares.age0_14,
-        fallback.ageShares.age15_64,
-        fallback.ageShares.age65Plus
-      )
-    );
+    setAgeGroups(fallback.ageGroups);
   }, []);
 
   useEffect(() => {
@@ -51,13 +45,7 @@ const Index = () => {
         setInitialPopulation(data.population);
         setInitialTfr(data.tfr);
         setFertilityChanges([]);
-        setAgeGroups(
-          buildAgeGroupsFromShares(
-            data.ageShares.age0_14,
-            data.ageShares.age15_64,
-            data.ageShares.age65Plus
-          )
-        );
+        setAgeGroups(data.ageGroups);
         setDataYear(data.years.population ?? data.years.tfr ?? data.years.age ?? null);
         storeCountry(dataCountry);
       })

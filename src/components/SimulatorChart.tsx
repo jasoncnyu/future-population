@@ -14,6 +14,7 @@ import type { FertilityChangeEvent } from "@/lib/population-simulator";
 import { formatPopulation } from "@/lib/population-simulator";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
+import { useRef } from "react";
 
 interface SimulatorChartProps {
   data: YearData[];
@@ -27,6 +28,34 @@ export default function SimulatorChart({ data, fertilityChanges, locale }: Simul
   const maxPop = Math.max(...data.map((d) => d.population));
   const minPop = Math.min(...data.map((d) => d.population));
   const popPadding = (maxPop - minPop) * 0.1 || maxPop * 0.1;
+  const trendSign = Math.sign(data[data.length - 1].population - data[0].population);
+
+  const rangeRef = useRef<{ min: number; max: number; sign: number } | null>(null);
+  if (!rangeRef.current || rangeRef.current.sign !== trendSign) {
+    rangeRef.current = {
+      min: Math.max(0, minPop - popPadding),
+      max: maxPop + popPadding,
+      sign: trendSign,
+    };
+  } else {
+    const nextMin = Math.max(0, minPop - popPadding);
+    const nextMax = maxPop + popPadding;
+    if (nextMin < rangeRef.current.min) rangeRef.current.min = nextMin;
+    if (nextMax > rangeRef.current.max) rangeRef.current.max = nextMax;
+  }
+
+  const yDomain: [number, number] = [
+    rangeRef.current.min,
+    rangeRef.current.max,
+  ];
+
+  const tfrMax = Math.max(...data.map((d) => d.tfr));
+  const tfrRangeRef = useRef<number | null>(null);
+  if (!tfrRangeRef.current) {
+    tfrRangeRef.current = Math.max(2.5, tfrMax + 0.2);
+  } else if (tfrMax > tfrRangeRef.current) {
+    tfrRangeRef.current = tfrMax + 0.2;
+  }
 
   return (
     <div className="space-y-6">
@@ -43,7 +72,7 @@ export default function SimulatorChart({ data, fertilityChanges, locale }: Simul
                 tickFormatter={(v) => formatPopulation(v, locale)}
                 tick={{ fontSize: 12 }}
                 className="fill-muted-foreground"
-                domain={[Math.max(0, minPop - popPadding), maxPop + popPadding]}
+                domain={yDomain}
               />
               <Tooltip
                 formatter={(value: number) => [
@@ -94,7 +123,11 @@ export default function SimulatorChart({ data, fertilityChanges, locale }: Simul
             <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="year" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
-              <YAxis tick={{ fontSize: 12 }} className="fill-muted-foreground" domain={[0, "auto"]} />
+              <YAxis
+                tick={{ fontSize: 12 }}
+                className="fill-muted-foreground"
+                domain={[0, tfrRangeRef.current ?? "auto"]}
+              />
               <Tooltip
                 formatter={(value: number) => [value.toFixed(2), t(locale, "chart.tfr")]}
                 labelFormatter={(label) => t(locale, "summary.inYear", { year: label })}

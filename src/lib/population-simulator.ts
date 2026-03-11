@@ -28,9 +28,9 @@ export interface YearData {
 // Fertile women ratio: percentage of women ages 10-49 within total population.
 function calculateFertileWomenRatio(ageGroups: AgeGroupGender[]): number {
   const fertileGroups = ageGroups.filter((g) => g.minAge >= 10 && g.maxAge <= 49);
-  // femalePercent represents share within female population. Assume females are ~50% of total.
+  // femalePercent represents share within total population.
   const fertilePercentage = fertileGroups.reduce((sum, g) => sum + g.femalePercent, 0);
-  return (fertilePercentage / 100) * 0.5;
+  return fertilePercentage / 100;
 }
 
 export function simulatePopulation(params: SimulationParams): YearData[] {

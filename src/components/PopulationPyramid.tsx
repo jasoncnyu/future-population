@@ -22,15 +22,27 @@ interface PopulationPyramidProps {
 }
 
 export const DEFAULT_AGE_GROUPS: AgeGroupGender[] = [
-  { label: "0-9", minAge: 0, maxAge: 9, malePercent: 8, femalePercent: 6 },
-  { label: "10-19", minAge: 10, maxAge: 19, malePercent: 9, femalePercent: 8 },
-  { label: "20-29", minAge: 20, maxAge: 29, malePercent: 13, femalePercent: 11 },
-  { label: "30-39", minAge: 30, maxAge: 39, malePercent: 13, femalePercent: 11 },
-  { label: "40-49", minAge: 40, maxAge: 49, malePercent: 16, femalePercent: 16 },
-  { label: "50-59", minAge: 50, maxAge: 59, malePercent: 17, femalePercent: 17 },
-  { label: "60-69", minAge: 60, maxAge: 69, malePercent: 13, femalePercent: 15 },
-  { label: "70-79", minAge: 70, maxAge: 79, malePercent: 8, femalePercent: 10 },
-  { label: "80+", minAge: 80, maxAge: 100, malePercent: 3, femalePercent: 6 },
+  { label: "0-4", minAge: 0, maxAge: 4, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "5-9", minAge: 5, maxAge: 9, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "10-14", minAge: 10, maxAge: 14, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "15-19", minAge: 15, maxAge: 19, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "20-24", minAge: 20, maxAge: 24, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "25-29", minAge: 25, maxAge: 29, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "30-34", minAge: 30, maxAge: 34, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "35-39", minAge: 35, maxAge: 39, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "40-44", minAge: 40, maxAge: 44, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "45-49", minAge: 45, maxAge: 49, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "50-54", minAge: 50, maxAge: 54, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "55-59", minAge: 55, maxAge: 59, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "60-64", minAge: 60, maxAge: 64, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "65-69", minAge: 65, maxAge: 69, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "70-74", minAge: 70, maxAge: 74, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "75-79", minAge: 75, maxAge: 79, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "80-84", minAge: 80, maxAge: 84, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "85-89", minAge: 85, maxAge: 89, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "90-94", minAge: 90, maxAge: 94, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "95-99", minAge: 95, maxAge: 99, malePercent: 2.38, femalePercent: 2.38 },
+  { label: "100+", minAge: 100, maxAge: 100, malePercent: 2.38, femalePercent: 2.38 },
 ];
 
 export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: PopulationPyramidProps) {
@@ -175,7 +187,10 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
     setAgeGroups(draft);
   };
 
-  const maxPercent = 40;
+  const maxPercent = Math.max(
+    5,
+    ...draft.flatMap((g) => [g.malePercent, g.femalePercent])
+  );
 
   const barColors = [
     { male: "bg-sky-400", female: "bg-rose-400" },
@@ -215,8 +230,11 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {draft.map((group, index) => (
-            <div key={group.label} className="flex items-center gap-1 h-8">
+          {draft
+            .map((group, index) => ({ group, index }))
+            .reverse()
+            .map(({ group, index }) => (
+            <div key={`${group.label}-${index}`} className="flex items-center gap-1 h-8">
               <Input
                 type="number"
                 value={group.malePercent}
