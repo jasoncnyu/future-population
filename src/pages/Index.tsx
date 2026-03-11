@@ -6,7 +6,7 @@ import { simulatePopulation, type FertilityChangeEvent } from "@/lib/population-
 import PopulationPyramid, { DEFAULT_AGE_GROUPS, type AgeGroupGender } from "@/components/PopulationPyramid";
 import AppHeader from "@/components/AppHeader";
 import { useLocale } from "@/lib/locale-context";
-import { localeLabel, t, type Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { OECD_COUNTRIES, getCountryName, type CountryCode } from "@/lib/countries";
 import { detectLocaleAndCountry, storeCountry } from "@/lib/geo";
 import { getCountryData, getDefaultCountryData } from "@/lib/country-data";
@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 
 const Index = () => {
-  const { locale, setLocale } = useLocale();
+  const { locale } = useLocale();
   const [dataCountry, setDataCountry] = useState<CountryCode>(() => {
     const { country } = detectLocaleAndCountry();
     return country;
@@ -35,7 +35,7 @@ const Index = () => {
     setInitialPopulation(fallback.population);
     setInitialTfr(fallback.tfr);
     setAgeGroups(fallback.ageGroups);
-  }, []);
+  }, [dataCountry]);
 
   useEffect(() => {
     let active = true;
@@ -90,47 +90,28 @@ const Index = () => {
         subtitle={t(locale, "app.subtitle")}
         meta={`${t(locale, "header.source")}${dataYear ? ` · ${t(locale, "header.dataYear", { year: dataYear })}` : ""}`}
         right={
-          <>
-            <div className="min-w-[180px]">
-              <Label className="text-xs">{t(locale, "header.language")}</Label>
-              <Select value={locale} onValueChange={(v) => setLocale(v as Locale)}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {OECD_COUNTRIES.flatMap((c) => c.locales)
-                    .filter((v, i, arr) => arr.indexOf(v) === i)
-                    .map((loc) => (
-                      <SelectItem key={loc} value={loc}>
-                        {localeLabel(loc as any)}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="min-w-[220px]">
-              <Label className="text-xs">{t(locale, "header.dataPreset")}</Label>
-              <Select value={dataCountry} onValueChange={(v) => setDataCountry(v as CountryCode)}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {OECD_COUNTRIES.map((c) => (
-                    <SelectItem key={c.code} value={c.code}>
-                      {getCountryName(locale, c.code)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {loadingData && (
-                <p className="text-[11px] text-muted-foreground mt-1">{t(locale, "misc.loading")}</p>
-              )}
-            </div>
-          </>
+          <div className="min-w-[220px]">
+            <Label className="text-xs">{t(locale, "header.dataPreset")}</Label>
+            <Select value={dataCountry} onValueChange={(v) => setDataCountry(v as CountryCode)}>
+              <SelectTrigger className="mt-1">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {OECD_COUNTRIES.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {getCountryName(locale, c.code)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {loadingData && (
+              <p className="text-[11px] text-muted-foreground mt-1">{t(locale, "misc.loading")}</p>
+            )}
+          </div>
         }
       />
 
-      <main className="p-4 lg:p-8 space-y-6">
+      <main className="space-y-6 p-4 lg:p-8">
         <SimulatorSummary data={data} initialPopulation={initialPopulation} locale={locale} />
 
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">

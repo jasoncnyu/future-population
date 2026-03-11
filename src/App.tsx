@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -11,34 +11,43 @@ import Theory from "./pages/Theory";
 import { LocaleProvider } from "@/lib/locale-context";
 import { defaultLocale, normalizeLocale, type Locale } from "@/lib/i18n";
 import { detectLocaleAndCountry, storeCountry } from "@/lib/geo";
+import AppLayout from "@/layouts/AppLayout";
 
 const queryClient = new QueryClient();
 
 const LocaleRedirect = () => {
-  const navigate = useNavigate();
   const { locale, country } = detectLocaleAndCountry();
   storeCountry(country);
   return <Navigate to={`/${locale}`} replace />;
 };
 
 const LocaleGate = ({ element }: { element: React.ReactNode }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
   const paramLocale = params.locale ?? "";
   const normalized = normalizeLocale(paramLocale) ?? defaultLocale;
   const locale = normalized as Locale;
-
-  if (paramLocale && normalizeLocale(paramLocale) !== locale) {
-    return <Navigate to={`/${locale}`} replace />;
-  }
-
-  const setLocale = (next: Locale) => navigate(`/${next}`);
+  const shouldRedirect = Boolean(paramLocale && normalizeLocale(paramLocale) !== locale);
+  const setLocale = (next: Locale) => {
+    const [, , ...rest] = location.pathname.split("/");
+    const nextPath = `/${next}${rest.length > 0 ? `/${rest.join("/")}` : ""}`;
+    navigate(`${nextPath}${location.search}${location.hash}`);
+  };
 
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
 
-  return <LocaleProvider value={{ locale, setLocale }}>{element}</LocaleProvider>;
+  if (shouldRedirect) {
+    return <Navigate to={`/${locale}`} replace />;
+  }
+
+  return (
+    <LocaleProvider value={{ locale, setLocale }}>
+      <AppLayout>{element}</AppLayout>
+    </LocaleProvider>
+  );
 };
 
 const App = () => (
