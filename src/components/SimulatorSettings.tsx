@@ -1,10 +1,15 @@
 ﻿import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Plus, Trash2 } from "lucide-react";
-import type { FertilityChangeEvent } from "@/lib/population-simulator";
+import {
+  MORTALITY_AGE_BANDS,
+  getScaledMortalityRate,
+  type FertilityChangeEvent,
+} from "@/lib/population-simulator";
 import PopulationPyramid, { type AgeGroupGender } from "./PopulationPyramid";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
@@ -90,16 +95,48 @@ export default function SimulatorSettings({
           </div>
 
           <div className="space-y-2">
-            <Label>
-              {t(locale, "settings.deathRate")}: {(deathRate * 100).toFixed(1)}%
-            </Label>
-            <Slider
-              value={[deathRate]}
-              onValueChange={([v]) => setDeathRate(v)}
-              min={0}
-              max={0.05}
-              step={0.001}
-            />
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="mortality-table" className="border-b-0">
+                <div className="flex items-center justify-between gap-3">
+                  <Label>
+                    {t(locale, "settings.deathRate")}: {(deathRate * 100).toFixed(1)}%
+                  </Label>
+                  <AccordionTrigger className="w-auto py-0 text-xs font-medium text-primary hover:no-underline">
+                    {t(locale, "settings.deathRateExpand")}
+                  </AccordionTrigger>
+                </div>
+                <Slider
+                  value={[deathRate]}
+                  onValueChange={([v]) => setDeathRate(v)}
+                  min={0}
+                  max={0.05}
+                  step={0.001}
+                />
+                <AccordionContent className="pt-3">
+                  <div className="rounded-lg border border-border bg-muted/30 p-3">
+                    <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
+                      {t(locale, "settings.deathRateHelp")}
+                    </p>
+                    <div className="overflow-hidden rounded-md border border-border">
+                      <div className="grid grid-cols-2 bg-muted/60 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                        <span>{t(locale, "settings.mortalityAgeBand")}</span>
+                        <span className="text-right">{t(locale, "settings.mortalityAppliedRate")}</span>
+                      </div>
+                      <div className="divide-y divide-border bg-background">
+                        {MORTALITY_AGE_BANDS.map((band) => (
+                          <div key={band.label} className="grid grid-cols-2 px-3 py-2 text-xs text-foreground">
+                            <span>{band.label}</span>
+                            <span className="text-right">
+                              {(getScaledMortalityRate(band.minAge, deathRate) * 100).toFixed(2)}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

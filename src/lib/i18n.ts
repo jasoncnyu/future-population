@@ -57,6 +57,11 @@ const messages: Record<Locale, MessageMap> = {
     "settings.initialPopulation": "Initial population",
     "settings.initialTfr": "Initial TFR",
     "settings.deathRate": "Death rate",
+    "settings.deathRateExpand": "Show rates",
+    "settings.deathRateHelp":
+      "This slider scales the built-in age-specific mortality schedule. The table below shows the annual rate currently applied to each age band.",
+    "settings.mortalityAgeBand": "Age band",
+    "settings.mortalityAppliedRate": "Applied rate",
     "settings.startYear": "Start year",
     "settings.endYear": "End year",
     "settings.fertilityScenario": "Fertility change scenario",
@@ -101,6 +106,47 @@ const messages: Record<Locale, MessageMap> = {
       "TFR is the average number of children a woman would have over her lifetime given current age-specific fertility rates.",
     "theory.tfr.p2":
       "In the model, higher TFR increases births from women in reproductive ages, which shifts the pyramid and long-term population path.",
+    "theory.hero.title": "Population Projection",
+    "theory.hero.subtitle": "Theory & Methodology",
+    "theory.model.title": "How the simulator works",
+    "theory.model.p1":
+      "Population projection is fundamentally an accounting problem: how many people are alive now, how many survive, how many are born, and how the population shifts across age groups over time. Our simulator starts from a total population and an age-sex distribution split into 5-year bands.",
+    "theory.model.p2":
+      "Those percentages are converted into counts of males and females in each age band. The model then advances the population one year at a time, updating births, deaths, and ageing in sequence.",
+    "theory.model.p3":
+      "So the core idea is simple: the future population depends not only on today's total size, but also on who is young, who is old, and how fertility and mortality evolve from here.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Mortality, ageing, and survival",
+    "theory.mortality.p1":
+      "Mortality rises with age, which is one of the central facts of population dynamics. In our simulator, each age band has a baseline mortality rate: very low in childhood and early adulthood, progressively higher at older ages.",
+    "theory.mortality.p2":
+      "The death-rate slider scales that age pattern up or down. After deaths are applied, the surviving population ages forward. Because the pyramid uses 5-year age bands, the model moves roughly one-fifth of each surviving cohort into the next band each simulated year.",
+    "theory.mortality.p3":
+      "This creates gradual ageing instead of abrupt jumps. It also means that a population with many older people can shrink even if fertility does not change very much, simply because more of its population is exposed to higher mortality.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR and replacement level",
+    "theory.fertility.p1":
+      "The Total Fertility Rate, or TFR, is the average number of children a woman would bear over her lifetime under current fertility conditions. A TFR of about 2.1 is often called the replacement level in low-mortality societies: the level at which one generation roughly replaces itself.",
+    "theory.fertility.p2":
+      "When TFR stays below replacement for a long time, population decline becomes more likely unless it is offset by other forces. In this simulator, TFR is the main fertility input. The model counts women ages 15-49 and uses the chosen TFR to estimate how many births occur each year.",
+    "theory.fertility.p3":
+      "In the current implementation, annual births are approximated as women ages 15-49 multiplied by TFR divided by 35. That turns a lifetime fertility measure into a simple yearly flow while still preserving the intuition that more women in reproductive ages and higher TFR both lead to more births.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Age structure and population momentum",
+    "theory.ageStructure.p1":
+      "Two populations can have the same total size and the same TFR yet move in different directions if their age structures differ. A younger population contains more future parents. An older population contains more people near high-mortality ages.",
+    "theory.ageStructure.p2":
+      "That is why the editable population pyramid matters so much in this app. It lets you set the starting composition of the population and see how that structure generates momentum. Even after fertility changes, the effects unfold gradually because the age structure keeps echoing into the future.",
+    "theory.limitations.title": "Scenario changes and interpretation",
+    "theory.limitations.p1":
+      "Fertility change events in the simulator are step changes. When you set a new TFR for a given year, the model switches to that value from that year onward until another event replaces it. This makes it easy to test scenarios such as recovery, stagnation, or further decline.",
+    "theory.limitations.p2":
+      "The outputs are best read as transparent scenario results: a way to understand how fertility, mortality, and age structure interact over time under the assumptions you choose.",
+    "theory.reading.title": "Further Reading",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   fr: {
     "app.title": "Projections de population future",
@@ -1713,6 +1759,11 @@ const messages: Record<Locale, MessageMap> = {
     "settings.initialPopulation": "초기 인구",
     "settings.initialTfr": "초기 TFR",
     "settings.deathRate": "사망률",
+    "settings.deathRateExpand": "펼치기",
+    "settings.deathRateHelp":
+      "이 슬라이더는 내장된 연령별 사망률 표 전체를 스케일링합니다. 아래 표는 현재 각 연령대에 실제로 적용되는 연간 사망률입니다.",
+    "settings.mortalityAgeBand": "연령대",
+    "settings.mortalityAppliedRate": "적용 사망률",
     "settings.startYear": "시작 연도",
     "settings.endYear": "종료 연도",
     "settings.fertilityScenario": "출산율 변화 시나리오",
@@ -1757,6 +1808,47 @@ const messages: Record<Locale, MessageMap> = {
       "TFR은 현재의 연령별 출산율이 유지된다고 가정했을 때 여성이 평생 낳는 평균 자녀 수입니다.",
     "theory.tfr.p2":
       "모델에서 TFR이 높아지면 가임 연령 여성의 출생이 늘어 피라미드와 장기 인구 경로가 이동합니다.",
+    "theory.hero.title": "인구 투영",
+    "theory.hero.subtitle": "이론 및 방법론",
+    "theory.model.title": "시뮬레이터가 작동하는 방식",
+    "theory.model.p1":
+      "인구 투영은 결국 계산의 문제입니다. 현재 몇 명이 살아 있는지, 얼마나 생존하는지, 얼마나 태어나는지, 그리고 시간이 지나며 인구가 연령대 사이를 어떻게 이동하는지를 추적하는 일입니다. 우리 시뮬레이터는 총인구와 5세 단위 연령-성별 분포에서 시작합니다.",
+    "theory.model.p2":
+      "인구피라미드의 비율은 각 연령대 남녀 인원수로 바뀌고, 모델은 그 값을 1년 단위로 갱신합니다. 매년 출생, 사망, 고령화가 순서대로 반영됩니다.",
+    "theory.model.p3":
+      "즉 핵심은 단순합니다. 미래 인구는 오늘의 총인구만으로 결정되지 않고, 누가 젊고 누가 고령인지, 그리고 출산과 사망이 앞으로 어떻게 변하는지에 따라 달라집니다.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "사망, 고령화, 생존",
+    "theory.mortality.p1":
+      "사망률은 나이에 따라 올라갑니다. 이것은 인구동학의 가장 중요한 사실 중 하나입니다. 우리 시뮬레이터에서는 각 연령대마다 기본 사망률이 있고, 어린 연령대는 매우 낮으며 고령대로 갈수록 점점 높아집니다.",
+    "theory.mortality.p2":
+      "death-rate 슬라이더는 이 연령 패턴 전체를 위아래로 스케일링합니다. 사망을 적용한 뒤 생존자는 다음 연령대로 이동합니다. 인구피라미드가 5세 단위 연령 구간을 사용하므로, 매년 각 생존 집단의 약 5분의 1이 다음 구간으로 이동합니다.",
+    "theory.mortality.p3":
+      "이 방식은 인구가 갑자기 뛰는 대신 점진적으로 고령화되게 만듭니다. 또한 고령 인구 비중이 큰 사회는 출산이 크게 변하지 않아도 더 많은 사람이 높은 사망률 구간에 있기 때문에 인구가 줄어들 수 있습니다.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR과 대체출산수준",
+    "theory.fertility.p1":
+      "합계출산율(TFR)은 현재의 출산 조건이 유지된다고 가정할 때 여성이 평생 낳을 평균 자녀 수입니다. 저사망 사회에서 약 2.1의 TFR은 흔히 대체출산수준이라고 불리며, 한 세대가 다음 세대를 대략적으로 대체하는 수준을 뜻합니다.",
+    "theory.fertility.p2":
+      "TFR이 대체수준 아래에서 장기간 유지되면, 다른 힘이 상쇄하지 않는 한 인구 감소 가능성은 커집니다. 이 시뮬레이터에서 TFR은 핵심 출산 입력값입니다. 모델은 15세에서 49세 사이 여성 수를 집계하고, 선택한 TFR을 이용해 매년 발생할 출생 수를 계산합니다.",
+    "theory.fertility.p3":
+      "현재 구현에서는 연간 출생 수를 15-49세 여성 수 x TFR / 35로 근사합니다. 이렇게 하면 평생 출산 수준을 단순한 연간 흐름으로 바꾸면서도, 가임기 여성 수가 많거나 TFR이 높을수록 출생이 늘어난다는 직관은 유지할 수 있습니다.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "연령구조와 인구 모멘텀",
+    "theory.ageStructure.p1":
+      "총인구와 TFR이 같아도 연령구조가 다르면 인구의 방향은 달라질 수 있습니다. 젊은 인구는 미래의 부모가 더 많고, 고령 인구는 높은 사망률 연령대에 있는 사람이 더 많습니다.",
+    "theory.ageStructure.p2":
+      "그래서 이 앱에서 수정 가능한 인구피라미드가 중요합니다. 초기 인구 구성을 직접 설정할 수 있고, 그 구조가 어떻게 인구 모멘텀을 만들어내는지 볼 수 있습니다. 출산율이 바뀌더라도 그 효과는 즉시 끝나지 않고, 기존 연령구조를 통해 오랫동안 미래로 이어집니다.",
+    "theory.limitations.title": "시나리오 변화와 해석",
+    "theory.limitations.p1":
+      "시뮬레이터의 fertility change event는 계단형 변화입니다. 특정 연도에 새 TFR을 설정하면, 그 해부터 다음 이벤트가 나오기 전까지 해당 값이 유지됩니다. 이를 통해 회복, 정체, 추가 하락 같은 시나리오를 쉽게 시험할 수 있습니다.",
+    "theory.limitations.p2":
+      "결과는 선택한 가정 아래에서 나온 투명한 시나리오 결과로 읽는 것이 가장 좋습니다. 핵심은 출산, 사망, 연령구조가 시간에 따라 어떻게 맞물리는지 이해하는 데 있습니다.",
+    "theory.reading.title": "더 읽어보기",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
 };
 

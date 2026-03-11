@@ -28,6 +28,30 @@ export interface YearData {
 
 const BASE_DEATH_RATE = 0.008;
 
+export const MORTALITY_AGE_BANDS = [
+  { label: "0-4", minAge: 0 },
+  { label: "5-9", minAge: 5 },
+  { label: "10-14", minAge: 10 },
+  { label: "15-19", minAge: 15 },
+  { label: "20-24", minAge: 20 },
+  { label: "25-29", minAge: 25 },
+  { label: "30-34", minAge: 30 },
+  { label: "35-39", minAge: 35 },
+  { label: "40-44", minAge: 40 },
+  { label: "45-49", minAge: 45 },
+  { label: "50-54", minAge: 50 },
+  { label: "55-59", minAge: 55 },
+  { label: "60-64", minAge: 60 },
+  { label: "65-69", minAge: 65 },
+  { label: "70-74", minAge: 70 },
+  { label: "75-79", minAge: 75 },
+  { label: "80-84", minAge: 80 },
+  { label: "85-89", minAge: 85 },
+  { label: "90-94", minAge: 90 },
+  { label: "95-99", minAge: 95 },
+  { label: "100+", minAge: 100 },
+] as const;
+
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
@@ -54,6 +78,11 @@ function mortalityRateForAge(minAge: number): number {
   if (minAge < 95) return 0.2;
   if (minAge < 100) return 0.28;
   return 0.36;
+}
+
+export function getScaledMortalityRate(minAge: number, deathRate: number) {
+  const scale = clamp(deathRate / BASE_DEATH_RATE, 0.1, 5);
+  return clamp(mortalityRateForAge(minAge) * scale, 0, 0.9);
 }
 
 function toCounts(ageGroups: AgeGroupGender[], totalPopulation: number) {
@@ -103,8 +132,6 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
   } = params;
 
   const sortedChanges = [...fertilityChanges].sort((a, b) => a.year - b.year);
-  const scale = clamp(deathRate / BASE_DEATH_RATE, 0.1, 5);
-
   let currentTfr = initialTfr;
   let { male, female } = toCounts(ageGroups, initialPopulation);
 
@@ -124,8 +151,7 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
     const nextFemale = new Array(female.length).fill(0);
 
     for (let i = 0; i < ageGroups.length; i++) {
-      const baseRate = mortalityRateForAge(ageGroups[i].minAge);
-      const rate = clamp(baseRate * scale, 0, 0.9);
+      const rate = getScaledMortalityRate(ageGroups[i].minAge, deathRate);
 
       const maleSurvivors = male[i] * (1 - rate);
       const femaleSurvivors = female[i] * (1 - rate);
