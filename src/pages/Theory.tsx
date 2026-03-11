@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { Github } from "lucide-react";
 
 import { useLocale } from "@/lib/locale-context";
 import { t } from "@/lib/i18n";
@@ -68,6 +69,10 @@ export default function Theory() {
       body: [t(locale, "theory.ageStructure.p1"), t(locale, "theory.ageStructure.p2")],
     },
     {
+      title: t(locale, "theory.data.title"),
+      body: [t(locale, "theory.data.p1"), t(locale, "theory.data.p2"), t(locale, "theory.data.p3")],
+    },
+    {
       title: t(locale, "theory.limitations.title"),
       body: [t(locale, "theory.limitations.p1"), t(locale, "theory.limitations.p2")],
     },
@@ -102,6 +107,21 @@ export default function Theory() {
             {section.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
+            {section.title === t(locale, "theory.limitations.title") ? (
+              <p>
+                {t(locale, "theory.limitations.p3")}{" "}
+                <a
+                  href="https://github.com/jasoncnyu/future-population"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+                >
+                  <Github className="h-4 w-4" />
+                  {t(locale, "theory.limitations.github")}
+                </a>
+                .
+              </p>
+            ) : null}
             {section.formula ? <FormulaBlock>{section.formula}</FormulaBlock> : null}
           </Section>
         ))}

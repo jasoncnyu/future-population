@@ -39,7 +39,7 @@ const messages: Record<Locale, MessageMap> = {
     "header.language": "Language",
     "header.dataPreset": "Data preset",
     "header.dataYear": "Data year: {{year}}",
-    "header.source": "Source: World Bank",
+    "header.source": "Source: U.S. Census Bureau International Data Base (IDB)",
     "summary.finalPopulation": "Final population",
     "summary.totalChange": "Total change",
     "summary.populationIncrease": "Population increase",
@@ -137,11 +137,21 @@ const messages: Record<Locale, MessageMap> = {
       "Two populations can have the same total size and the same TFR yet move in different directions if their age structures differ. A younger population contains more future parents. An older population contains more people near high-mortality ages.",
     "theory.ageStructure.p2":
       "That is why the editable population pyramid matters so much in this app. It lets you set the starting composition of the population and see how that structure generates momentum. Even after fertility changes, the effects unfold gradually because the age structure keeps echoing into the future.",
+    "theory.data.title": "Data sources and initialization",
+    "theory.data.p1":
+      "The simulator initializes each country using data from the U.S. Census Bureau International Data Base (IDB) API. From that source it loads total population, total fertility rate, and age-sex population counts in 5-year age bands.",
+    "theory.data.p2":
+      "For each selected country, the app tries recent years and uses the most recent available IDB observation. Those values become the starting point for the simulation: the initial population, the initial TFR, and the population pyramid.",
+    "theory.data.p3":
+      "After the data is loaded, the simulation is no longer tied to the source dataset. You can change the initial population, adjust TFR and mortality, reshape the age pyramid, and add fertility scenario changes to explore alternative futures.",
     "theory.limitations.title": "Scenario changes and interpretation",
     "theory.limitations.p1":
       "Fertility change events in the simulator are step changes. When you set a new TFR for a given year, the model switches to that value from that year onward until another event replaces it. This makes it easy to test scenarios such as recovery, stagnation, or further decline.",
     "theory.limitations.p2":
       "The outputs are best read as transparent scenario results: a way to understand how fertility, mortality, and age structure interact over time under the assumptions you choose.",
+    "theory.limitations.p3":
+      "There is still plenty of room to improve the model. If you want to refine the assumptions, extend the methodology, or contribute better data, please contribute on",
+    "theory.limitations.github": "GitHub",
     "theory.reading.title": "Further Reading",
     "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
     "theory.reading.2": "United Nations, World Population Prospects methodology",
@@ -1741,7 +1751,7 @@ const messages: Record<Locale, MessageMap> = {
     "header.language": "언어",
     "header.dataPreset": "데이터 프리셋",
     "header.dataYear": "데이터 연도: {{year}}",
-    "header.source": "출처: 세계은행",
+    "header.source": "출처: 미국 Census Bureau International Data Base (IDB)",
     "summary.finalPopulation": "최종 인구",
     "summary.totalChange": "총 변화",
     "summary.populationIncrease": "인구 증가",
@@ -1839,11 +1849,21 @@ const messages: Record<Locale, MessageMap> = {
       "총인구와 TFR이 같아도 연령구조가 다르면 인구의 방향은 달라질 수 있습니다. 젊은 인구는 미래의 부모가 더 많고, 고령 인구는 높은 사망률 연령대에 있는 사람이 더 많습니다.",
     "theory.ageStructure.p2":
       "그래서 이 앱에서 수정 가능한 인구피라미드가 중요합니다. 초기 인구 구성을 직접 설정할 수 있고, 그 구조가 어떻게 인구 모멘텀을 만들어내는지 볼 수 있습니다. 출산율이 바뀌더라도 그 효과는 즉시 끝나지 않고, 기존 연령구조를 통해 오랫동안 미래로 이어집니다.",
+    "theory.data.title": "데이터 출처와 초기값",
+    "theory.data.p1":
+      "시뮬레이터는 미국 Census Bureau의 International Data Base(IDB) API를 이용해 각 국가의 초기값을 불러옵니다. 여기서 총인구, 합계출산율(TFR), 그리고 5세 단위 연령-성별 인구 수를 가져옵니다.",
+    "theory.data.p2":
+      "선택한 국가마다 최근 연도부터 순서대로 조회하여, 이용 가능한 가장 최신 IDB 관측값을 사용합니다. 이 값들이 시뮬레이션의 시작점인 초기 인구, 초기 TFR, 그리고 인구피라미드를 구성합니다.",
+    "theory.data.p3":
+      "데이터를 불러온 뒤에는 시뮬레이션이 원본 데이터에 고정되지 않습니다. 사용자는 초기 인구를 바꾸고, TFR과 사망률을 조정하고, 연령 피라미드를 수정하고, 출산율 변화 시나리오를 추가하여 다른 미래를 실험할 수 있습니다.",
     "theory.limitations.title": "시나리오 변화와 해석",
     "theory.limitations.p1":
       "시뮬레이터의 fertility change event는 계단형 변화입니다. 특정 연도에 새 TFR을 설정하면, 그 해부터 다음 이벤트가 나오기 전까지 해당 값이 유지됩니다. 이를 통해 회복, 정체, 추가 하락 같은 시나리오를 쉽게 시험할 수 있습니다.",
     "theory.limitations.p2":
       "결과는 선택한 가정 아래에서 나온 투명한 시나리오 결과로 읽는 것이 가장 좋습니다. 핵심은 출산, 사망, 연령구조가 시간에 따라 어떻게 맞물리는지 이해하는 데 있습니다.",
+    "theory.limitations.p3":
+      "모델은 앞으로 더 발전시킬 여지가 많습니다. 가정을 더 정교하게 다듬거나, 방법론을 확장하거나, 더 나은 데이터를 보태고 싶다면",
+    "theory.limitations.github": "GitHub에서 기여해 주세요",
     "theory.reading.title": "더 읽어보기",
     "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
     "theory.reading.2": "United Nations, World Population Prospects methodology",

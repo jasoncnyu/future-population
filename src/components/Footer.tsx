@@ -3,7 +3,7 @@ import { Github } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="space-y-2 border-t border-border px-4 py-8 text-center text-sm text-muted-foreground">
-      <p>Built with curiosity. Data from the World Bank.</p>
+      <p>Built with curiosity. Baseline country data from the U.S. Census Bureau IDB API.</p>
       <p>
         Open-source under MIT License ·{" "}
         <a
