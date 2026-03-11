@@ -46,34 +46,43 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   const r2 = (n: number) => Math.round(n * 100) / 100;
   const maleTotal = r2(draft.reduce((s, g) => s + g.malePercent, 0));
   const femaleTotal = r2(draft.reduce((s, g) => s + g.femalePercent, 0));
+  const totalPercent = r2(maleTotal + femaleTotal);
 
   const redistributeValues = useCallback(
     (index: number, side: "male" | "female", newValue: number) => {
       const field = side === "male" ? "malePercent" : "femalePercent";
-      const clampedValue = r2(Math.max(0.01, Math.min(40, newValue)));
+      const clampedValue = r2(Math.max(0.01, Math.min(60, newValue)));
 
       const oldValue = draft[index][field];
-      const diff = r2(clampedValue - oldValue);
-      if (diff === 0) return;
+      const total = draft.reduce((sum, g) => sum + g.malePercent + g.femalePercent, 0);
+      const otherTotal = total - oldValue;
+      if (otherTotal <= 0) return;
 
-      const otherCount = draft.length - 1;
-      const perItem = r2(diff / otherCount);
+      const remaining = 100 - clampedValue;
+      const scale = remaining / otherTotal;
 
       const newDraft = draft.map((group, i) => {
         if (i === index) {
           return { ...group, [field]: clampedValue };
         }
-        const adjusted = r2(Math.max(0.01, group[field] - perItem));
-        return { ...group, [field]: adjusted };
+        return {
+          ...group,
+          malePercent: r2(group.malePercent * scale),
+          femalePercent: r2(group.femalePercent * scale),
+        };
       });
 
-      const total = r2(newDraft.reduce((sum, g) => sum + g[field], 0));
-      if (total !== 100) {
-        const residual = r2(100 - total);
-        const lastOther = index === newDraft.length - 1 ? newDraft.length - 2 : newDraft.length - 1;
-        newDraft[lastOther] = {
-          ...newDraft[lastOther],
-          [field]: r2(newDraft[lastOther][field] + residual),
+      // Fix rounding residual onto the last bar to hit exactly 100
+      const totalAfter = r2(
+        newDraft.reduce((sum, g) => sum + g.malePercent + g.femalePercent, 0)
+      );
+      const residual = r2(100 - totalAfter);
+      if (Math.abs(residual) > 0) {
+        const lastIndex = index === newDraft.length - 1 ? newDraft.length - 2 : newDraft.length - 1;
+        newDraft[lastIndex] = {
+          ...newDraft[lastIndex],
+          malePercent: r2(newDraft[lastIndex].malePercent + residual / 2),
+          femalePercent: r2(newDraft[lastIndex].femalePercent + residual / 2),
         };
       }
 
@@ -117,19 +126,14 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   };
 
   const handleInputChange = (index: number, field: "malePercent" | "femalePercent", value: number) => {
-    setDraft(draft.map((g, i) => (i === index ? { ...g, [field]: value } : g)));
-    setError(null);
+    redistributeValues(index, field === "malePercent" ? "male" : "female", value);
   };
 
   const handleApply = () => {
-    const mt = draft.reduce((s, g) => s + g.malePercent, 0);
-    const ft = draft.reduce((s, g) => s + g.femalePercent, 0);
-    if (mt !== 100) {
-      setError(`${t(locale, "pyramid.maleTotal")} ${mt}%`);
-      return;
-    }
-    if (ft !== 100) {
-      setError(`${t(locale, "pyramid.femaleTotal")} ${ft}%`);
+    const total = draft.reduce((s, g) => s + g.malePercent + g.femalePercent, 0);
+    const roundedTotal = r2(total);
+    if (Math.abs(roundedTotal - 100) > 0.1) {
+      setError(`${t(locale, "pyramid.maleTotal")}+${t(locale, "pyramid.femaleTotal")} ${roundedTotal}%`);
       return;
     }
     setError(null);
@@ -164,7 +168,9 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
             {t(locale, "pyramid.female")} ({femaleTotal}%)
           </span>
         </div>
-        <p className="text-[11px] text-muted-foreground">{t(locale, "pyramid.instructions")}</p>
+        <p className="text-[11px] text-muted-foreground">
+          {t(locale, "pyramid.instructions")} · Total {totalPercent}%
+        </p>
       </CardHeader>
       <CardContent className="space-y-3">
         <div
