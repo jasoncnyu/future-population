@@ -3,7 +3,7 @@ import SimulatorSettings from "@/components/SimulatorSettings";
 import SimulatorChart from "@/components/SimulatorChart";
 import SimulatorSummary from "@/components/SimulatorSummary";
 import { simulatePopulation, type FertilityChangeEvent } from "@/lib/population-simulator";
-import { DEFAULT_AGE_GROUPS, type AgeGroupGender } from "@/components/PopulationPyramid";
+import PopulationPyramid, { DEFAULT_AGE_GROUPS, type AgeGroupGender } from "@/components/PopulationPyramid";
 import { useLocale } from "@/lib/locale-context";
 import { localeLabel, t, type Locale } from "@/lib/i18n";
 import { OECD_COUNTRIES, getCountryName, type CountryCode } from "@/lib/countries";
@@ -70,6 +70,17 @@ const Index = () => {
       }),
     [initialPopulation, initialTfr, startYear, endYear, deathRate, fertilityChanges, ageGroups]
   );
+
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  useEffect(() => {
+    if (data.length === 0) return;
+    if (selectedYear == null || !data.find((d) => d.year === selectedYear)) {
+      setSelectedYear(data[data.length - 1].year);
+    }
+  }, [data, selectedYear]);
+
+  const selectedSnapshot =
+    data.length === 0 ? null : data.find((d) => d.year === selectedYear) ?? data[data.length - 1];
 
   return (
     <div className="min-h-screen bg-background">
@@ -145,7 +156,24 @@ const Index = () => {
             locale={locale}
           />
 
-          <SimulatorChart data={data} fertilityChanges={fertilityChanges} locale={locale} />
+          <div className="space-y-6">
+            <SimulatorChart
+              data={data}
+              fertilityChanges={fertilityChanges}
+              locale={locale}
+              selectedYear={selectedYear}
+              onSelectYear={setSelectedYear}
+            />
+            {selectedSnapshot && (
+              <PopulationPyramid
+                ageGroups={selectedSnapshot.ageGroups}
+                setAgeGroups={() => {}}
+                locale={locale}
+                readOnly
+                title={`Population pyramid · ${selectedSnapshot.year}`}
+              />
+            )}
+          </div>
         </div>
       </main>
     </div>

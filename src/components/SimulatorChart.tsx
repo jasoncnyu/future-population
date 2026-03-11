@@ -20,9 +20,17 @@ interface SimulatorChartProps {
   data: YearData[];
   fertilityChanges: FertilityChangeEvent[];
   locale: Locale;
+  selectedYear?: number | null;
+  onSelectYear?: (year: number) => void;
 }
 
-export default function SimulatorChart({ data, fertilityChanges, locale }: SimulatorChartProps) {
+export default function SimulatorChart({
+  data,
+  fertilityChanges,
+  locale,
+  selectedYear,
+  onSelectYear,
+}: SimulatorChartProps) {
   if (data.length === 0) return null;
 
   const maxPop = Math.max(...data.map((d) => d.population));
@@ -65,7 +73,17 @@ export default function SimulatorChart({ data, fertilityChanges, locale }: Simul
         </h3>
         <div className="h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+            <LineChart
+              data={data}
+              margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+              onClick={(state) => {
+                const label = state?.activeLabel;
+                const year = typeof label === "number" ? label : Number(label);
+                if (!Number.isNaN(year)) {
+                  onSelectYear?.(year);
+                }
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="year" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
               <YAxis
@@ -102,6 +120,13 @@ export default function SimulatorChart({ data, fertilityChanges, locale }: Simul
                   }}
                 />
               ))}
+              {typeof selectedYear === "number" && (
+                <ReferenceLine
+                  x={selectedYear}
+                  stroke="hsl(var(--primary))"
+                  strokeDasharray="2 2"
+                />
+              )}
               <Line
                 type="monotone"
                 dataKey="population"

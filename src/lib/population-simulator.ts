@@ -23,14 +23,72 @@ export interface YearData {
   births: number;
   deaths: number;
   growthRate: number;
+  ageGroups: AgeGroupGender[];
 }
 
-// Fertile women ratio: percentage of women ages 10-49 within total population.
-function calculateFertileWomenRatio(ageGroups: AgeGroupGender[]): number {
-  const fertileGroups = ageGroups.filter((g) => g.minAge >= 10 && g.maxAge <= 49);
-  // femalePercent represents share within total population.
-  const fertilePercentage = fertileGroups.reduce((sum, g) => sum + g.femalePercent, 0);
-  return fertilePercentage / 100;
+const BASE_DEATH_RATE = 0.008;
+
+function clamp(n: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, n));
+}
+
+function mortalityRateForAge(minAge: number): number {
+  if (minAge < 5) return 0.004;
+  if (minAge < 10) return 0.0006;
+  if (minAge < 15) return 0.0006;
+  if (minAge < 20) return 0.0008;
+  if (minAge < 25) return 0.001;
+  if (minAge < 30) return 0.0012;
+  if (minAge < 35) return 0.0016;
+  if (minAge < 40) return 0.0022;
+  if (minAge < 45) return 0.0035;
+  if (minAge < 50) return 0.005;
+  if (minAge < 55) return 0.007;
+  if (minAge < 60) return 0.01;
+  if (minAge < 65) return 0.015;
+  if (minAge < 70) return 0.025;
+  if (minAge < 75) return 0.04;
+  if (minAge < 80) return 0.06;
+  if (minAge < 85) return 0.09;
+  if (minAge < 90) return 0.14;
+  if (minAge < 95) return 0.2;
+  if (minAge < 100) return 0.28;
+  return 0.36;
+}
+
+function toCounts(ageGroups: AgeGroupGender[], totalPopulation: number) {
+  const male: number[] = [];
+  const female: number[] = [];
+  ageGroups.forEach((g) => {
+    male.push((totalPopulation * g.malePercent) / 100);
+    female.push((totalPopulation * g.femalePercent) / 100);
+  });
+  return { male, female };
+}
+
+function toPercents(
+  ageGroups: AgeGroupGender[],
+  male: number[],
+  female: number[]
+): AgeGroupGender[] {
+  const total = male.reduce((s, v) => s + v, 0) + female.reduce((s, v) => s + v, 0);
+  if (!total) return ageGroups;
+  return ageGroups.map((g, i) => ({
+    ...g,
+    malePercent: Math.round(((male[i] / total) * 100) * 100) / 100,
+    femalePercent: Math.round(((female[i] / total) * 100) * 100) / 100,
+  }));
+}
+
+function sum(values: number[]) {
+  return values.reduce((s, v) => s + v, 0);
+}
+
+function getReproductiveFemaleCount(ageGroups: AgeGroupGender[], female: number[]) {
+  return ageGroups.reduce((s, g, i) => {
+    if (g.minAge >= 15 && g.maxAge <= 49) return s + female[i];
+    return s;
+  }, 0);
 }
 
 export function simulatePopulation(params: SimulationParams): YearData[] {
@@ -45,28 +103,68 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
   } = params;
 
   const sortedChanges = [...fertilityChanges].sort((a, b) => a.year - b.year);
-  const fertileWomenRatio = calculateFertileWomenRatio(ageGroups);
+  const scale = clamp(deathRate / BASE_DEATH_RATE, 0.1, 5);
+
+  let currentTfr = initialTfr;
+  let { male, female } = toCounts(ageGroups, initialPopulation);
 
   const results: YearData[] = [];
-  let population = initialPopulation;
-  let currentTfr = initialTfr;
 
   for (let year = startYear; year <= endYear; year++) {
     const change = sortedChanges.find((c) => c.year === year);
-    if (change) {
-      currentTfr = change.tfr;
+    if (change) currentTfr = change.tfr;
+
+    const reproductiveWomen = getReproductiveFemaleCount(ageGroups, female);
+    const births = Math.round(reproductiveWomen * (currentTfr / 35));
+    const maleBirths = Math.round(births * 0.512);
+    const femaleBirths = births - maleBirths;
+
+    let deaths = 0;
+    const nextMale = new Array(male.length).fill(0);
+    const nextFemale = new Array(female.length).fill(0);
+
+    for (let i = 0; i < ageGroups.length; i++) {
+      const baseRate = mortalityRateForAge(ageGroups[i].minAge);
+      const rate = clamp(baseRate * scale, 0, 0.9);
+
+      const maleSurvivors = male[i] * (1 - rate);
+      const femaleSurvivors = female[i] * (1 - rate);
+      deaths += (male[i] - maleSurvivors) + (female[i] - femaleSurvivors);
+
+      const outflowMale = i === ageGroups.length - 1 ? 0 : maleSurvivors / 5;
+      const outflowFemale = i === ageGroups.length - 1 ? 0 : femaleSurvivors / 5;
+      const stayMale = maleSurvivors - outflowMale;
+      const stayFemale = femaleSurvivors - outflowFemale;
+
+      nextMale[i] += stayMale;
+      nextFemale[i] += stayFemale;
+      if (i < ageGroups.length - 1) {
+        nextMale[i + 1] += outflowMale;
+        nextFemale[i + 1] += outflowFemale;
+      }
     }
 
-    const births = Math.round(population * fertileWomenRatio * (currentTfr / 30));
-    const deaths = Math.round(population * deathRate);
-    const prevPopulation = population;
+    nextMale[0] += maleBirths;
+    nextFemale[0] += femaleBirths;
 
-    population = Math.max(0, population + births - deaths);
+    const population = Math.max(0, Math.round(sum(nextMale) + sum(nextFemale)));
+    const prevPopulation = Math.max(0, Math.round(sum(male) + sum(female)));
+    const growthRate = prevPopulation > 0 ? ((population - prevPopulation) / prevPopulation) * 100 : 0;
 
-    const growthRate =
-      prevPopulation > 0 ? ((population - prevPopulation) / prevPopulation) * 100 : 0;
+    const snapshotGroups = toPercents(ageGroups, nextMale, nextFemale);
 
-    results.push({ year, population, tfr: currentTfr, births, deaths, growthRate });
+    results.push({
+      year,
+      population,
+      tfr: currentTfr,
+      births,
+      deaths: Math.round(deaths),
+      growthRate,
+      ageGroups: snapshotGroups,
+    });
+
+    male = nextMale;
+    female = nextFemale;
   }
 
   return results;

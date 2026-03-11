@@ -19,6 +19,8 @@ interface PopulationPyramidProps {
   ageGroups: AgeGroupGender[];
   setAgeGroups: (groups: AgeGroupGender[]) => void;
   locale: Locale;
+  readOnly?: boolean;
+  title?: string;
 }
 
 export const DEFAULT_AGE_GROUPS: AgeGroupGender[] = [
@@ -45,7 +47,13 @@ export const DEFAULT_AGE_GROUPS: AgeGroupGender[] = [
   { label: "100+", minAge: 100, maxAge: 100, malePercent: 2.38, femalePercent: 2.38 },
 ];
 
-export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: PopulationPyramidProps) {
+export default function PopulationPyramid({
+  ageGroups,
+  setAgeGroups,
+  locale,
+  readOnly,
+  title,
+}: PopulationPyramidProps) {
   const [draft, setDraft] = useState<AgeGroupGender[]>(ageGroups);
   const [error, setError] = useState<string | null>(null);
   const [dragging, setDragging] = useState<{ index: number; side: "male" | "female" } | null>(null);
@@ -140,12 +148,13 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   );
 
   const handleMouseDown = (index: number, side: "male" | "female") => {
+    if (readOnly) return;
     setDragging({ index, side });
   };
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!dragging || !containerRef.current) return;
+      if (readOnly || !dragging || !containerRef.current) return;
 
       const barContainer = containerRef.current.querySelector(
         `[data-bar="${dragging.index}-${dragging.side}"]`
@@ -173,6 +182,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   };
 
   const handleInputChange = (index: number, field: "malePercent" | "femalePercent", value: number) => {
+    if (readOnly) return;
     redistributeValues(index, field === "malePercent" ? "male" : "female", value);
   };
 
@@ -184,6 +194,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
       return;
     }
     setError(null);
+    if (readOnly) return;
     setAgeGroups(draft);
   };
 
@@ -209,7 +220,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg">{t(locale, "pyramid.title")}</CardTitle>
+        <CardTitle className="text-lg">{title ?? t(locale, "pyramid.title")}</CardTitle>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="text-sky-500 font-medium">
             {t(locale, "pyramid.male")} ({maleTotal}%)
@@ -219,7 +230,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
           </span>
         </div>
         <p className="text-[11px] text-muted-foreground">
-          {t(locale, "pyramid.instructions")} · Total {totalPercent}%
+          {readOnly ? `Total ${totalPercent}%` : `${t(locale, "pyramid.instructions")} · Total ${totalPercent}%`}
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -243,11 +254,12 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
                 min={0}
                 max={100}
                 step={0.01}
+                disabled={readOnly}
               />
 
               <div className="flex-1 flex justify-end" data-bar={`${index}-male`}>
                 <div
-                  className={`h-6 rounded-l ${barColors[index % barColors.length].male} cursor-ew-resize transition-[width] duration-75 hover:opacity-80`}
+                  className={`h-6 rounded-l ${barColors[index % barColors.length].male} ${readOnly ? "cursor-default" : "cursor-ew-resize"} transition-[width] duration-75 hover:opacity-80`}
                   style={{ width: `${(group.malePercent / maxPercent) * 100}%` }}
                   onMouseDown={() => handleMouseDown(index, "male")}
                 />
@@ -259,7 +271,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
 
               <div className="flex-1 flex justify-start" data-bar={`${index}-female`}>
                 <div
-                  className={`h-6 rounded-r ${barColors[index % barColors.length].female} cursor-ew-resize transition-[width] duration-75 hover:opacity-80`}
+                  className={`h-6 rounded-r ${barColors[index % barColors.length].female} ${readOnly ? "cursor-default" : "cursor-ew-resize"} transition-[width] duration-75 hover:opacity-80`}
                   style={{ width: `${(group.femalePercent / maxPercent) * 100}%` }}
                   onMouseDown={() => handleMouseDown(index, "female")}
                 />
@@ -273,6 +285,7 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
                 min={0}
                 max={100}
                 step={0.01}
+                disabled={readOnly}
               />
             </div>
           ))}
@@ -287,17 +300,19 @@ export default function PopulationPyramid({ ageGroups, setAgeGroups, locale }: P
           </span>
         </div>
 
-        {error && (
+        {!readOnly && error && (
           <Alert variant="destructive" className="py-2">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-xs">{error}</AlertDescription>
           </Alert>
         )}
 
-        <Button onClick={handleApply} className="w-full" size="sm" disabled={!isDirty && !error}>
-          <Check className="h-4 w-4 mr-1" />
-          {t(locale, "pyramid.apply")}
-        </Button>
+        {!readOnly && (
+          <Button onClick={handleApply} className="w-full" size="sm" disabled={!isDirty && !error}>
+            <Check className="h-4 w-4 mr-1" />
+            {t(locale, "pyramid.apply")}
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
