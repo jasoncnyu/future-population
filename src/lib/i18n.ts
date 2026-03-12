@@ -1927,6 +1927,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Jakou společnost chceme, pokud se populace zmenšuje?",
     "about.q2": "Jaké kompromisy jsme ochotni přijmout, abychom změnili trend?",
     "about.opensource": "Open source.",
+    "about.hero.tagline": "Open‑source simulátor populace",
+    "about.hero.titleLine1": "Co se stane,",
+    "about.hero.titleLine2": "když populace ubývá?",
+    "about.hero.body":
+      "Plodnost klesá. Populace stárnou. Budoucnost je nejistá, ale ne nepředstavitelná. Prozkoumejte čísla sami.",
+    "about.hero.ctaPrimary": "Spustit simulaci",
+    "about.hero.ctaSecondary": "Zobrazit na GitHubu",
+    "about.stats.oecd": "TFR ve většině zemí OECD",
+    "about.stats.subreplacement": "světové populace v zemích pod úrovní reprodukce",
+    "about.stats.peak": "odhadovaný vrchol světové populace (OSN, střední varianta)",
+    "about.section1.title": "Tichá proměna",
+    "about.section1.body":
+      "Mnohé vyspělé ekonomiky čelí dlouhodobé plodnosti pod úrovní reprodukce a rychlému stárnutí. To přetváří trhy práce, poptávku po bydlení, sociální zabezpečení a mezigenerační rovnováhu. Dopady jsou pomalé, ale kumulativní, a když se stanou viditelnými, demografická struktura, která je vytvořila, je už desítky let stará.",
+    "about.section2.title": "Zlomí se trend?",
+    "about.section2.body":
+      "Bude populace klesat navždy, nebo se trajektorie změní? Politika, migrace, technologie a měnící se kulturní preference mohou změnit směr. Pronatalistické politiky měly smíšené výsledky: některé země zaznamenaly mírné oživení plodnosti, jiné téměř žádný efekt. Upřímná odpověď je, že to nevíme.",
+    "about.section3.title": "Dystopie nebo utopie?",
+    "about.section3.body":
+      "Menší populace může znamenat menší zácpy a nižší emise, nebo zmenšující se komunity a fiskální tlak. Je budoucnost depopulace dystopická, nebo utopická? Odpověď není předem daná. Záleží na volbách, které společnosti udělají. Proto je důležité přemýšlet o těchto číslech už teď.",
+    "about.cta.title": "Promítněme budoucnost společně",
+    "about.cta.body":
+      "Tento simulátor je open source. Máte‑li nápady, data nebo expertízu, přispějte. Demografie je příliš důležitá na to, aby zůstala v uzavřených modelech a placených datech.",
+    "about.cta.primary": "Vyzkoušet simulátor",
+    "about.cta.secondary": "Přispět na GitHubu",
     "theory.title": "Teorie",
     "theory.subtitle": "Jak model funguje",
     "theory.cohort.title": "Kohortně-komponentní metoda",
@@ -1939,6 +1963,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR je průměrný počet dětí, které by žena měla během života při současných věkově specifických mírách plodnosti.",
     "theory.tfr.p2":
       "V modelu vyšší TFR zvyšuje počet narození u žen v reprodukčním věku, což posouvá pyramidu i dlouhodobou trajektorii.",
+    "theory.hero.title": "Projekce populace",
+    "theory.hero.subtitle": "Teorie a metodologie",
+    "theory.model.title": "Jak simulátor funguje",
+    "theory.model.p1":
+      "Projekce populace je v zásadě účetní problém: kolik lidí je nyní naživu, kolik přežívá, kolik se rodí a jak se populace v čase přesouvá mezi věkovými skupinami. Náš simulátor vychází z celkové populace a věkovo‑pohlavního rozdělení v 5letých pásmech.",
+    "theory.model.p2":
+      "Tyto podíly se převádějí na počty mužů a žen v každém věkovém pásmu. Model poté posouvá populaci rok po roku a v tomto pořadí aktualizuje narození, úmrtí a stárnutí.",
+    "theory.model.p3":
+      "Jádro myšlenky je jednoduché: budoucí populace závisí nejen na dnešní velikosti, ale také na tom, kdo je mladý, kdo je starý a jak se bude vyvíjet plodnost a úmrtnost.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Úmrtnost, stárnutí a přežití",
+    "theory.mortality.p1":
+      "Úmrtnost roste s věkem, což je jeden z klíčových faktů populační dynamiky. V našem simulátoru má každé věkové pásmo základní míru úmrtnosti: velmi nízkou v dětství a rané dospělosti a postupně vyšší ve vyšším věku.",
+    "theory.mortality.p2":
+      "Posuvník míry úmrtnosti tento věkový vzorec škáluje nahoru či dolů. Po aplikaci úmrtí stárne přeživší populace. Protože pyramida používá 5leté věkové pásmo, model každým simulovaným rokem přesune zhruba pětinu každé přeživší kohorty do dalšího pásma.",
+    "theory.mortality.p3":
+      "To vytváří postupné stárnutí místo náhlých skoků. Zároveň to znamená, že populace s velkým podílem starších lidí může klesat i tehdy, kdy se plodnost příliš nemění, protože větší část je vystavena vyšší úmrtnosti.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR a úroveň reprodukce",
+    "theory.fertility.p1":
+      "Celková míra plodnosti (TFR) je průměrný počet dětí, které by žena měla během života za současných věkově specifických měr plodnosti. TFR kolem 2,1 se v nízko‑úmrtnostních společnostech často nazývá úroveň reprodukce: úroveň, na níž se jedna generace přibližně nahrazuje.",
+    "theory.fertility.p2":
+      "Když TFR dlouhodobě zůstává pod úrovní reprodukce, je pokles populace pravděpodobnější, pokud jej nevyrovnají jiné síly. V tomto simulátoru je TFR hlavním vstupem plodnosti. Model počítá ženy ve věku 15–49 let a používá zvolený TFR k odhadu počtu narození každý rok.",
+    "theory.fertility.p3":
+      "V současné implementaci se roční počty narození aproximují jako počet žen ve věku 15–49 let krát TFR dělený 35. To převádí celoživotní míru plodnosti na jednoduchý roční tok a zároveň zachovává intuici, že více žen v reprodukčním věku a vyšší TFR vede k více porodům.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Věková struktura a populační setrvačnost",
+    "theory.ageStructure.p1":
+      "Dvě populace mohou mít stejnou celkovou velikost a stejný TFR, ale vyvíjet se různě, pokud se liší jejich věková struktura. Mladší populace má více budoucích rodičů. Starší populace má více lidí blízko věků s vysokou úmrtností.",
+    "theory.ageStructure.p2":
+      "Proto je v této aplikaci tak důležitá editovatelná populační pyramida. Umožňuje nastavit počáteční složení populace a vidět, jak tato struktura vytváří setrvačnost. I po změnách plodnosti se účinky rozvíjejí postupně, protože věková struktura dál rezonuje do budoucna.",
+    "theory.data.title": "Zdroje dat a inicializace",
+    "theory.data.p1":
+      "Simulátor inicializuje každou zemi daty z International Data Base (IDB) U.S. Census Bureau. Z tohoto zdroje načítá celkovou populaci, TFR a věkově‑pohlavní počty v 5letých pásmech.",
+    "theory.data.p2":
+      "Pro každou vybranou zemi aplikace zkouší poslední roky a použije nejnovější dostupné pozorování IDB. Tyto hodnoty se stanou výchozím bodem simulace: počáteční populace, počáteční TFR a populační pyramida.",
+    "theory.data.p3":
+      "Po načtení dat už simulace není vázána na zdrojový dataset. Můžete změnit počáteční populaci, upravit TFR a úmrtnost, přetvořit věkovou pyramidu a přidat změny scénářů plodnosti pro zkoumání alternativních budoucností.",
+    "theory.limitations.title": "Změny scénářů a interpretace",
+    "theory.limitations.p1":
+      "Události změny plodnosti v simulátoru jsou skokové změny. Když nastavíte nový TFR pro daný rok, model přepne na tuto hodnotu od daného roku až do chvíle, kdy ji nahradí další událost. To usnadňuje testování scénářů jako oživení, stagnace nebo další pokles.",
+    "theory.limitations.p2":
+      "Výstupy je nejlepší číst jako transparentní scénářové výsledky: způsob, jak pochopit, jak plodnost, úmrtnost a věková struktura interagují v čase za zvolených předpokladů.",
+    "theory.limitations.p3a":
+      "Stále je dost prostoru model zlepšovat. Pokud chcete zpřesnit předpoklady, rozšířit metodiku nebo přispět lepšími daty, přispějte na",
+    "theory.limitations.p3b": ". Pro obecnou zpětnou vazbu a diskusi použijte",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "fórum LeanVibe",
+    "theory.reading.title": "Další čtení",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   sk: {
     "app.title": "Budúce projekcie populácie",
@@ -1996,6 +2074,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Akú spoločnosť chceme, ak populácia klesá?",
     "about.q2": "Aké kompromisy sme ochotní prijať, aby sa trend zmenil?",
     "about.opensource": "Open source.",
+    "about.hero.tagline": "Open‑source simulátor populácie",
+    "about.hero.titleLine1": "Čo sa stane,",
+    "about.hero.titleLine2": "keď populácia klesá?",
+    "about.hero.body":
+      "Plodnosť klesá. Populácie starnú. Budúcnosť je neistá, ale nie nepredstaviteľná. Preskúmajte čísla sami.",
+    "about.hero.ctaPrimary": "Spustiť simuláciu",
+    "about.hero.ctaSecondary": "Zobraziť na GitHube",
+    "about.stats.oecd": "TFR vo väčšine krajín OECD",
+    "about.stats.subreplacement": "svetovej populácie v krajinách pod úrovňou reprodukcie",
+    "about.stats.peak": "odhadovaný vrchol svetovej populácie (OSN, stredný variant)",
+    "about.section1.title": "Tichá premena",
+    "about.section1.body":
+      "Mnohé rozvinuté ekonomiky čelia dlhodobo nízkej plodnosti pod úrovňou reprodukcie a rýchlemu starnutiu. To mení trhy práce, dopyt po bývaní, sociálne zabezpečenie a medzigeneračnú rovnováhu. Účinky sú pomalé, no kumulatívne, a keď sa stanú viditeľnými, demografická štruktúra, ktorá ich vytvorila, je už desaťročia stará.",
+    "about.section2.title": "Zlomí sa trend?",
+    "about.section2.body":
+      "Bude populácia klesať navždy, alebo sa trajektória zmení? Politiky, migrácia, technológie a meniace sa kultúrne preferencie môžu zmeniť smer. Pronatalistické politiky priniesli zmiešané výsledky: niektoré krajiny videli mierne oživenie plodnosti, iné takmer žiadny efekt. Úprimná odpoveď je, že to nevieme.",
+    "about.section3.title": "Dystopia alebo utopia?",
+    "about.section3.body":
+      "Menšia populácia môže znamenať menej zápch a nižšie emisie, alebo zmenšujúce sa komunity a fiškálny tlak. Je budúcnosť depopulácie dystopická alebo utopická? Odpoveď nie je predurčená. Závisí od rozhodnutí, ktoré spoločnosti urobia. Preto je dôležité premýšľať o týchto číslach už teraz.",
+    "about.cta.title": "Projektujme budúcnosť spolu",
+    "about.cta.body":
+      "Tento simulátor je open source. Ak máte nápady, dáta alebo expertízu, prispejte. Demografia je príliš dôležitá na to, aby zostala v uzavretých modeloch a platených dátach.",
+    "about.cta.primary": "Vyskúšať simulátor",
+    "about.cta.secondary": "Prispieť na GitHub",
     "theory.title": "Teória",
     "theory.subtitle": "Ako model funguje",
     "theory.cohort.title": "Kohortno-komponentná metóda",
@@ -2008,6 +2110,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR je priemerný počet detí, ktoré by žena mala počas života pri súčasných vekovo špecifických mierach plodnosti.",
     "theory.tfr.p2":
       "V modeli vyšší TFR zvyšuje počet narodení u žien v reprodukčnom veku, čo posúva pyramídu aj dlhodobú trajektóriu.",
+    "theory.hero.title": "Projekcia populácie",
+    "theory.hero.subtitle": "Teória a metodológia",
+    "theory.model.title": "Ako funguje simulátor",
+    "theory.model.p1":
+      "Projekcia populácie je v podstate účtovný problém: koľko ľudí je teraz nažive, koľko prežíva, koľko sa rodí a ako sa populácia v čase presúva medzi vekovými skupinami. Náš simulátor vychádza z celkovej populácie a vekovo‑pohlavného rozdelenia v 5‑ročných pásmach.",
+    "theory.model.p2":
+      "Tieto percentá sa prevádzajú na počty mužov a žien v každom vekovom pásme. Model potom posúva populáciu rok po roku a v tomto poradí aktualizuje narodenia, úmrtia a starnutie.",
+    "theory.model.p3":
+      "Základná myšlienka je jednoduchá: budúca populácia nezávisí len od dnešnej veľkosti, ale aj od toho, kto je mladý, kto je starý, a ako sa bude vyvíjať plodnosť a úmrtnosť.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Úmrtnosť, starnutie a prežitie",
+    "theory.mortality.p1":
+      "Úmrtnosť rastie s vekom, čo je jeden z kľúčových faktov populačnej dynamiky. V našom simulátore má každé vekové pásmo základnú mieru úmrtnosti: veľmi nízku v detstve a ranej dospelosti, postupne vyššiu v staršom veku.",
+    "theory.mortality.p2":
+      "Posuvník úmrtnosti tento vekový vzorec škáluje nahor alebo nadol. Po aplikovaní úmrtí preživšia populácia starne. Keďže pyramída používa 5‑ročné pásma, model každý simulovaný rok presunie približne pätinu každej preživšej kohorty do ďalšieho pásma.",
+    "theory.mortality.p3":
+      "To vytvára postupné starnutie namiesto náhlych skokov. Zároveň to znamená, že populácia s veľkým podielom starších ľudí môže klesať aj vtedy, keď sa plodnosť veľmi nemení, jednoducho preto, že väčšia časť je vystavená vyššej úmrtnosti.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR a úroveň reprodukcie",
+    "theory.fertility.p1":
+      "Celková miera plodnosti (TFR) je priemerný počet detí, ktoré by žena mala počas života pri súčasných vekovo špecifických mierach plodnosti. TFR okolo 2,1 sa v spoločnostiach s nízkou úmrtnosťou často nazýva úrovňou reprodukcie: úrovňou, pri ktorej sa jedna generácia približne nahrádza.",
+    "theory.fertility.p2":
+      "Keď TFR dlhodobo zostáva pod úrovňou reprodukcie, pokles populácie je pravdepodobnejší, pokiaľ ho nevyvážia iné sily. V tomto simulátore je TFR hlavným vstupom plodnosti. Model počíta ženy vo veku 15–49 rokov a používa zvolený TFR na odhad počtu narodení každý rok.",
+    "theory.fertility.p3":
+      "V aktuálnej implementácii sa ročné narodenia aproximujú ako počet žien vo veku 15–49 rokov krát TFR delený 35. Tým sa celoživotná miera plodnosti prevádza na jednoduchý ročný tok a zároveň sa zachováva intuícia, že viac žien v reprodukčnom veku a vyšší TFR vedie k viac narodeným.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Veková štruktúra a populačná zotrvačnosť",
+    "theory.ageStructure.p1":
+      "Dve populácie môžu mať rovnakú celkovú veľkosť a rovnaký TFR, no môžu sa vyvíjať rôzne, ak sa ich vekové štruktúry líšia. Mladšia populácia obsahuje viac budúcich rodičov. Staršia populácia obsahuje viac ľudí blízko vekov s vysokou úmrtnosťou.",
+    "theory.ageStructure.p2":
+      "Preto je v tejto aplikácii taká dôležitá editovateľná populačná pyramída. Umožňuje nastaviť počiatočné zloženie populácie a vidieť, ako táto štruktúra vytvára zotrvačnosť. Aj po zmenách plodnosti sa účinky rozvíjajú postupne, pretože veková štruktúra rezonuje do budúcna.",
+    "theory.data.title": "Zdroje dát a inicializácia",
+    "theory.data.p1":
+      "Simulátor inicializuje každú krajinu dátami z International Data Base (IDB) U.S. Census Bureau. Z tohto zdroja načíta celkovú populáciu, TFR a vekovo‑pohlavné počty v 5‑ročných pásmach.",
+    "theory.data.p2":
+      "Pre každú vybranú krajinu aplikácia skúša posledné roky a použije najnovšie dostupné pozorovanie IDB. Tieto hodnoty sa stanú východiskom simulácie: počiatočná populácia, počiatočný TFR a populačná pyramída.",
+    "theory.data.p3":
+      "Po načítaní dát už simulácia nie je viazaná na zdrojový dataset. Môžete zmeniť počiatočnú populáciu, upraviť TFR a úmrtnosť, preformovať vekovú pyramídu a pridať zmeny scenárov plodnosti na skúmanie alternatívnych budúcností.",
+    "theory.limitations.title": "Zmeny scenárov a interpretácia",
+    "theory.limitations.p1":
+      "Udalosti zmeny plodnosti v simulátore sú skokové zmeny. Keď nastavíte nový TFR pre daný rok, model prejde na túto hodnotu od daného roku, kým ju nenahradí ďalšia udalosť. To uľahčuje testovanie scenárov ako oživenie, stagnácia alebo ďalší pokles.",
+    "theory.limitations.p2":
+      "Výstupy je najlepšie čítať ako transparentné scenárové výsledky: spôsob, ako pochopiť, ako plodnosť, úmrtnosť a veková štruktúra interagujú v čase pri zvolených predpokladoch.",
+    "theory.limitations.p3a":
+      "Stále je veľa priestoru model zlepšovať. Ak chcete spresniť predpoklady, rozšíriť metodológiu alebo prispieť lepšími dátami, prispievajte na",
+    "theory.limitations.p3b": ". Pre všeobecnú spätnú väzbu a diskusiu použite",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "fórum LeanVibe",
+    "theory.reading.title": "Ďalšie čítanie",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   sl: {
     "app.title": "Prihodnje projekcije prebivalstva",
@@ -2134,6 +2290,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Milyen társadalmat akarunk, ha a népesség csökken?",
     "about.q2": "Milyen kompromisszumokat vagyunk hajlandók elfogadni a trend megváltoztatásáért?",
     "about.opensource": "Nyílt forráskód.",
+    "about.hero.tagline": "Nyílt forráskódú népességszimulátor",
+    "about.hero.titleLine1": "Mi történik,",
+    "about.hero.titleLine2": "ha a népesség zsugorodik?",
+    "about.hero.body":
+      "A termékenység csökken. A népesség öregszik. A jövő bizonytalan, de nem elképzelhetetlen. Fedezd fel a számokat.",
+    "about.hero.ctaPrimary": "Szimuláció indítása",
+    "about.hero.ctaSecondary": "Megtekintés GitHubon",
+    "about.stats.oecd": "TFR a legtöbb OECD-országban",
+    "about.stats.subreplacement": "a világ népességének aránya a reprodukciós szint alatti országokban",
+    "about.stats.peak": "a világ népességének várható csúcsa (ENSZ, középváltozat)",
+    "about.section1.title": "A csendes átalakulás",
+    "about.section1.body":
+      "Sok fejlett gazdaság tartósan a reprodukciós szint alatti termékenységgel és gyors öregedéssel néz szembe. Ez átalakítja a munkaerőpiacot, a lakáskeresletet, a társadalombiztosítást és a generációk közötti egyensúlyt. A hatások lassúak, de felhalmozódnak, és mire láthatóvá válnak, az őket létrehozó demográfiai szerkezet már évtizedes.",
+    "about.section2.title": "Megfordul a trend?",
+    "about.section2.body":
+      "A népesség örökké csökkenni fog, vagy megváltozik a pálya? A politika, a migráció, a technológia és a kulturális preferenciák változása módosíthatja az irányt. A pronatalista politikák vegyes eredményeket hoztak: egyes országokban mérsékelt termékenységi visszapattanás látszott, másutt szinte semmi hatás. Az őszinte válasz: nem tudjuk.",
+    "about.section3.title": "Disztópia vagy utópia?",
+    "about.section3.body":
+      "A kisebb népesség jelenthet kevesebb torlódást és alacsonyabb kibocsátást, vagy zsugorodó közösségeket és fiskális nyomást. Egy elnéptelenedő jövő disztópia vagy utópia? A válasz nincs előre meghatározva. Attól függ, milyen döntéseket hoznak a társadalmak. Ezért fontos most gondolkodni ezekről a számokról.",
+    "about.cta.title": "Vessük előre a jövőt együtt",
+    "about.cta.body":
+      "Ez a szimulátor nyílt forráskódú. Ha vannak ötleteid, adataid vagy szakértelmed, járulj hozzá. A demográfia túl fontos ahhoz, hogy zárt modellekre és fizetős adatokra bízzuk.",
+    "about.cta.primary": "Próbáld ki a szimulátort",
+    "about.cta.secondary": "Járulj hozzá GitHubon",
     "theory.title": "Elmélet",
     "theory.subtitle": "Hogyan működik a modell",
     "theory.cohort.title": "Kohort-komponens módszer",
@@ -2146,6 +2326,60 @@ const messages: Record<Locale, MessageMap> = {
       "A TFR a gyermekek átlagos száma, amelyet egy nő élete során szülne a jelenlegi életkor-specifikus termékenységi ráták mellett.",
     "theory.tfr.p2":
       "A modellben a magasabb TFR növeli a szüléseket a reproduktív korban, ami eltolja a piramist és a hosszú távú pályát.",
+    "theory.hero.title": "Népesség-előrejelzés",
+    "theory.hero.subtitle": "Elmélet és módszertan",
+    "theory.model.title": "Hogyan működik a szimulátor",
+    "theory.model.p1":
+      "A népesség-előrejelzés alapvetően elszámolási kérdés: hányan élnek most, hányan maradnak életben, hányan születnek, és hogyan tolódik a népesség az életkori csoportok között az időben. A szimulátorunk a teljes népességből és az 5 éves korcsoportokra bontott életkor‑ és nemi megoszlásból indul.",
+    "theory.model.p2":
+      "Ezeket a százalékokat férfiak és nők létszámává alakítjuk minden korcsoportban. A modell ezután évről évre továbbviszi a népességet, és ebben a sorrendben frissíti a születéseket, halálozásokat és az öregedést.",
+    "theory.model.p3":
+      "A lényeg egyszerű: a jövőbeli népesség nem csak a mai összlétszámtól függ, hanem attól is, hogy kik fiatalok, kik idősek, és hogyan alakul a termékenység és a halandóság innen tovább.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Halandóság, öregedés és túlélés",
+    "theory.mortality.p1":
+      "A halandóság az életkorral nő, ami a népességdinamika egyik központi ténye. A szimulátorunkban minden korcsoportnak van egy alap halandósági rátája: nagyon alacsony gyermekkorban és korai felnőttkorban, majd fokozatosan magasabb az idősebb korokban.",
+    "theory.mortality.p2":
+      "A halandósági csúszka felskálázza vagy leskálázza ezt az életkori mintázatot. A halálozások után a túlélő népesség öregszik. Mivel a piramis 5 éves korcsoportokat használ, a modell minden szimulált évben a túlélő kohorszok nagyjából egyötödét a következő korcsoportra viszi át.",
+    "theory.mortality.p3":
+      "Ez fokozatos öregedést hoz létre a hirtelen ugrások helyett. Ez azt is jelenti, hogy egy idősödő népesség akkor is zsugorodhat, ha a termékenység alig változik, egyszerűen azért, mert nagyobb arány van kitéve magasabb halandóságnak.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR és reprodukciós szint",
+    "theory.fertility.p1":
+      "A teljes termékenységi arányszám (TFR) az átlagos gyermekszám, amelyet egy nő élete során szülne a jelenlegi korcsoportos termékenységi ráták mellett. A nagyjából 2,1-es TFR-t a kis halandóságú társadalmakban gyakran reprodukciós szintnek nevezik: az a szint, amelyen egy generáció nagyjából pótolja önmagát.",
+    "theory.fertility.p2":
+      "Ha a TFR hosszú ideig a reprodukciós szint alatt marad, a népességcsökkenés valószínűbbé válik, hacsak más erők nem ellensúlyozzák. Ebben a szimulátorban a TFR a fő termékenységi input. A modell megszámolja a 15–49 éves nőket, és a választott TFR alapján becsüli meg az éves születések számát.",
+    "theory.fertility.p3":
+      "A jelenlegi implementációban az éves születéseket a 15–49 éves nők száma × TFR / 35 képlettel közelítjük. Ez a teljes életre vonatkozó termékenységi mérőt egyszerű éves áramlássá alakítja, miközben megőrzi azt az intuíciót, hogy több termékeny korú nő és magasabb TFR több születést eredményez.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Korcsoportszerkezet és népességi lendület",
+    "theory.ageStructure.p1":
+      "Két népességnek lehet azonos összlétszáma és azonos TFR-je, mégis eltérő irányba mozoghat, ha a korstruktúrájuk különbözik. A fiatalabb népesség több jövőbeli szülőt tartalmaz. Az idősebb népesség több embert tartalmaz a magas halandóságú korok közelében.",
+    "theory.ageStructure.p2":
+      "Ezért olyan fontos a szerkeszthető népességpiramis ebben az alkalmazásban. Lehetővé teszi a kiinduló összetétel beállítását és annak megfigyelését, hogyan hoz létre lendületet. A termékenység változásai után is fokozatosan bontakoznak ki a hatások, mert a korstruktúra sokáig továbbhat a jövőbe.",
+    "theory.data.title": "Adatforrások és inicializálás",
+    "theory.data.p1":
+      "A szimulátor minden országot az U.S. Census Bureau International Data Base (IDB) adataival inicializál. Ebből tölti be az össznépességet, a TFR-t és az 5 éves korcsoportok szerinti nem‑ és korcsoport‑számokat.",
+    "theory.data.p2":
+      "Minden kiválasztott országnál az alkalmazás a legutóbbi éveket próbálja, és a legfrissebb elérhető IDB‑megfigyelést használja. Ezek az értékek lesznek a szimuláció kiindulópontjai: kezdeti népesség, kezdeti TFR és népességpiramis.",
+    "theory.data.p3":
+      "Az adatok betöltése után a szimuláció már nem kötődik a forrásadatokhoz. Megváltoztathatod a kezdeti népességet, beállíthatod a TFR-t és a halandóságot, átalakíthatod a korpiramist, és termékenységi forgatókönyv‑változtatásokat adhatsz hozzá alternatív jövők feltárásához.",
+    "theory.limitations.title": "Forgatókönyv‑változások és értelmezés",
+    "theory.limitations.p1":
+      "A szimulátor termékenységváltozásai lépcsős változások. Ha egy adott évre új TFR-t állítasz be, a modell attól az évtől kezdve erre az értékre vált, amíg egy másik esemény nem váltja fel. Ez megkönnyíti olyan forgatókönyvek tesztelését, mint a fellendülés, a stagnálás vagy a további csökkenés.",
+    "theory.limitations.p2":
+      "Az eredményeket leginkább átlátható forgatókönyv‑kimenetként érdemes olvasni: így érthető meg, hogyan hat egymásra a termékenység, a halandóság és a korstruktúra az időben a választott feltételek mellett.",
+    "theory.limitations.p3a":
+      "Még bőven van tér a modell fejlesztésére. Ha pontosítani szeretnéd a feltételezéseket, bővítenéd a módszertant vagy jobb adatokat adnál hozzá, járulj hozzá a",
+    "theory.limitations.p3b": "on. Általános visszajelzéshez és vitához használd a",
+    "theory.limitations.p3c": "ot.",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "LeanVibe fórum",
+    "theory.reading.title": "További olvasmányok",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   et: {
     "app.title": "Tuleviku rahvastikuprognoosid",
