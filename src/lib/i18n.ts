@@ -2221,6 +2221,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Kakšno družbo želimo, če se prebivalstvo zmanjšuje?",
     "about.q2": "Kakšne kompromise smo pripravljeni sprejeti, da spremenimo trend?",
     "about.opensource": "Odprta koda.",
+    "about.hero.tagline": "Odprtokodni simulator prebivalstva",
+    "about.hero.titleLine1": "Kaj se zgodi",
+    "about.hero.titleLine2": "ko se prebivalstvo zmanjšuje?",
+    "about.hero.body":
+      "Rodnost pada. Prebivalstvo se stara. Prihodnost je negotova, a ne nepredstavljiva. Raziščite številke sami.",
+    "about.hero.ctaPrimary": "Začni simulacijo",
+    "about.hero.ctaSecondary": "Poglej na GitHubu",
+    "about.stats.oecd": "TFR v večini držav OECD",
+    "about.stats.subreplacement": "svetovnega prebivalstva v državah pod nadomestnim nivojem",
+    "about.stats.peak": "predviden vrh svetovnega prebivalstva (ZN, srednji scenarij)",
+    "about.section1.title": "Tihi preobrat",
+    "about.section1.body":
+      "Številna razvita gospodarstva se soočajo z dolgotrajno rodnostjo pod nadomestno ravnjo in hitrim staranjem. To preoblikuje trge dela, povpraševanje po stanovanjih, socialno varnost in medgeneracijsko ravnovesje. Učinki so počasni, vendar se kopičijo, in ko postanejo vidni, je demografska struktura, ki jih je ustvarila, že stara desetletja.",
+    "about.section2.title": "Se bo trend prelomil?",
+    "about.section2.body":
+      "Se bo prebivalstvo vedno zmanjševalo ali se bo pot spremenila? Politike, migracije, tehnologija in spreminjajoče se kulturne preference lahko spremenijo smer. Pronatalistične politike so pokazale mešane rezultate: nekatere države so doživele skromna okrevanja rodnosti, druge skoraj nobenega učinka. Iskren odgovor je, da ne vemo.",
+    "about.section3.title": "Distopija ali utopija?",
+    "about.section3.body":
+      "Manjše prebivalstvo lahko pomeni manj zastojev in nižje emisije, ali pa krčenje skupnosti in fiskalni pritisk. Je prihodnost depopulacije distopična ali utopična? Odgovor ni vnaprej določen. Odvisen je od odločitev, ki jih družbe sprejemajo. Zato je pomembno, da o teh številkah razmišljamo že zdaj.",
+    "about.cta.title": "Projicirajmo prihodnost skupaj",
+    "about.cta.body":
+      "Ta simulator je odprtokoden. Če imate ideje, podatke ali strokovno znanje, prispevajte. Demografija je preveč pomembna, da bi jo prepustili zaprtim modelom in plačljivim podatkom.",
+    "about.cta.primary": "Preizkusi simulator",
+    "about.cta.secondary": "Prispevaj na GitHubu",
     "theory.title": "Teorija",
     "theory.subtitle": "Kako model deluje",
     "theory.cohort.title": "Kohortno-komponentna metoda",
@@ -2233,6 +2257,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR je povprečno število otrok, ki bi jih ženska imela v življenju ob trenutnih starostno specifičnih stopnjah rodnosti.",
     "theory.tfr.p2":
       "V modelu višji TFR poveča rojstva pri ženskah v reproduktivni dobi, kar premakne piramido in dolgoročno pot.",
+    "theory.hero.title": "Projekcija prebivalstva",
+    "theory.hero.subtitle": "Teorija in metodologija",
+    "theory.model.title": "Kako deluje simulator",
+    "theory.model.p1":
+      "Projekcija prebivalstva je v osnovi računovodski problem: koliko ljudi je zdaj živih, koliko jih preživi, koliko se jih rodi in kako se prebivalstvo sčasoma premika med starostnimi skupinami. Naš simulator začne s skupnim prebivalstvom ter starostno‑spolno porazdelitvijo v 5‑letnih pasovih.",
+    "theory.model.p2":
+      "Ti odstotki se pretvorijo v število moških in žensk v vsakem starostnem pasu. Model nato premika prebivalstvo leto za letom in v tem vrstnem redu posodablja rojstva, smrti in staranje.",
+    "theory.model.p3":
+      "Zato je temeljna ideja preprosta: prihodnje prebivalstvo ni odvisno le od današnje velikosti, temveč tudi od tega, kdo je mlad, kdo je star, in kako se od tu naprej razvijata rodnost in umrljivost.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Umrljivost, staranje in preživetje",
+    "theory.mortality.p1":
+      "Umrljivost z naraščanjem starosti raste, kar je eno ključnih dejstev populacijske dinamike. V našem simulatorju ima vsak starostni pas osnovno stopnjo umrljivosti: zelo nizko v otroštvu in zgodnji odraslosti ter postopno višjo v starejših letih.",
+    "theory.mortality.p2":
+      "Drsnik umrljivosti to starostno krivuljo poveča ali zmanjša. Po uporabi smrti se preživelo prebivalstvo stara. Ker piramida uporablja 5‑letne pasove, model vsako simulacijsko leto premakne približno petino vsake preživele kohorte v naslednji pas.",
+    "theory.mortality.p3":
+      "To ustvarja postopno staranje namesto nenadnih skokov. Pomeni tudi, da lahko prebivalstvo z veliko starejšimi upade tudi, če se rodnost ne spremeni veliko, preprosto zato, ker je večji delež izpostavljen višji umrljivosti.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR in nadomestna raven",
+    "theory.fertility.p1":
+      "Skupna rodnost (TFR) je povprečno število otrok, ki bi jih ženska imela v življenju ob trenutnih starostno specifičnih stopnjah rodnosti. TFR okoli 2,1 se v družbah z nizko umrljivostjo pogosto imenuje nadomestna raven: raven, pri kateri se generacija približno nadomesti.",
+    "theory.fertility.p2":
+      "Ko TFR dalj časa ostane pod nadomestno ravnijo, postane upad prebivalstva bolj verjeten, razen če ga izravnajo druge sile. V tem simulatorju je TFR glavni vhod za rodnost. Model šteje ženske, stare 15–49 let, in uporablja izbrani TFR za oceno, koliko rojstev se zgodi vsako leto.",
+    "theory.fertility.p3":
+      "V trenutni implementaciji se letna rojstva približajo kot število žensk, starih 15–49 let, pomnoženo s TFR in deljeno s 35. To pretvori življenjsko mero rodnosti v preprost letni tok, hkrati pa ohrani intuicijo, da več žensk v rodni dobi in višji TFR vodita do več rojstev.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Starostna struktura in populacijski zagon",
+    "theory.ageStructure.p1":
+      "Dve populaciji imata lahko enako skupno velikost in enak TFR, vendar se lahko gibljeta v različne smeri, če se njuni starostni strukturi razlikujeta. Mlajša populacija vsebuje več prihodnjih staršev. Starejša populacija vsebuje več ljudi blizu starosti z visoko umrljivostjo.",
+    "theory.ageStructure.p2":
+      "Zato je urejevalna populacijska piramida v tej aplikaciji tako pomembna. Omogoča, da nastavite začetno sestavo prebivalstva in vidite, kako ta struktura ustvarja zagon. Tudi po spremembah rodnosti se učinki razvijajo postopoma, ker starostna struktura še dolgo odmeva v prihodnost.",
+    "theory.data.title": "Viri podatkov in inicializacija",
+    "theory.data.p1":
+      "Simulator inicializira vsako državo z podatki International Data Base (IDB) urada U.S. Census Bureau. Iz tega vira naloži skupno prebivalstvo, TFR ter starostne in spolne številke v 5‑letnih pasovih.",
+    "theory.data.p2":
+      "Za vsako izbrano državo aplikacija poskusi zadnja leta in uporabi najnovejše razpoložljivo opazovanje IDB. Te vrednosti postanejo izhodišče simulacije: začetno prebivalstvo, začetni TFR in populacijska piramida.",
+    "theory.data.p3":
+      "Po nalaganju podatkov simulacija ni več vezana na izvorni nabor podatkov. Lahko spremenite začetno prebivalstvo, prilagodite TFR in umrljivost, preoblikujete starostno piramido ter dodate spremembe scenarijev rodnosti za raziskovanje alternativnih prihodnosti.",
+    "theory.limitations.title": "Spremembe scenarijev in razlaga",
+    "theory.limitations.p1":
+      "Dogodki spremembe rodnosti v simulatorju so stopničaste spremembe. Ko za določeno leto nastavite nov TFR, model preklopi na to vrednost od tega leta naprej, dokler je ne zamenja drug dogodek. To olajša testiranje scenarijev, kot so okrevanje, stagnacija ali nadaljnji upad.",
+    "theory.limitations.p2":
+      "Rezultate je najbolje brati kot pregledne scenarije: način razumevanja, kako rodnost, umrljivost in starostna struktura skozi čas medsebojno delujejo glede na izbrane predpostavke.",
+    "theory.limitations.p3a":
+      "Še vedno je veliko prostora za izboljšave modela. Če želite izostriti predpostavke, razširiti metodologijo ali prispevati boljše podatke, prispevajte na",
+    "theory.limitations.p3b": ". Za splošne povratne informacije in razpravo uporabite ",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "forum LeanVibe",
+    "theory.reading.title": "Dodatno branje",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   hu: {
     "app.title": "Jövőbeli népesség-előrejelzések",
@@ -2575,6 +2653,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Kokios visuomenės norime, jei gyventojų skaičius mažėja?",
     "about.q2": "Kokius kompromisus esame pasirengę priimti, kad pakeistume tendenciją?",
     "about.opensource": "Atviro kodo.",
+    "about.hero.tagline": "Atvirojo kodo gyventojų simuliatorius",
+    "about.hero.titleLine1": "Kas nutinka",
+    "about.hero.titleLine2": "kai gyventojų mažėja?",
+    "about.hero.body":
+      "Vaisingumas mažėja. Gyventojai sensta. Ateitis neaiški, bet ne neįsivaizduojama. Išnagrinėkite skaičius patys.",
+    "about.hero.ctaPrimary": "Pradėti simuliaciją",
+    "about.hero.ctaSecondary": "Žiūrėti „GitHub“",
+    "about.stats.oecd": "TFR daugumoje EBPO šalių",
+    "about.stats.subreplacement": "pasaulio gyventojų dalis šalyse, kuriose žemiau pakaitos lygio",
+    "about.stats.peak": "numatomas pasaulio gyventojų pikas (JT, vidurinis variantas)",
+    "about.section1.title": "Tylus virsmas",
+    "about.section1.body":
+      "Daugelis išsivysčiusių ekonomikų susiduria su ilgalaikiu vaisingumu žemiau pakaitos lygio ir sparčiu senėjimu. Tai keičia darbo rinkas, būsto paklausą, socialinę apsaugą ir kartų pusiausvyrą. Poveikis lėtas, bet kaupiamas, ir kai jis tampa matomas, jį sukūrusi demografinė struktūra jau dešimtmečių senumo.",
+    "about.section2.title": "Ar tendencija pasikeis?",
+    "about.section2.body":
+      "Ar gyventojų skaičius mažės amžinai, ar trajektorija pasikeis? Politika, migracija, technologijos ir besikeičiantys kultūriniai prioritetai gali pakeisti kryptį. Pronatalistinė politika davė nevienareikšmius rezultatus: kai kuriose šalyse matyti kuklūs vaisingumo atsigavimai, kitur beveik jokio poveikio. Sąžiningas atsakymas – mes nežinome.",
+    "about.section3.title": "Distopija ar utopija?",
+    "about.section3.body":
+      "Mažesnė populiacija gali reikšti mažesnę spūstį ir mažesnes emisijas arba nykstančias bendruomenes ir fiskalinį spaudimą. Ar depopuliacijos ateitis yra distopija ar utopija? Atsakymas nėra iš anksto nustatytas. Jis priklauso nuo visuomenių pasirinktų sprendimų. Todėl svarbu apie šiuos skaičius galvoti dabar.",
+    "about.cta.title": "Projektuokime ateitį kartu",
+    "about.cta.body":
+      "Šis simuliatorius yra atvirojo kodo. Jei turite idėjų, duomenų ar kompetencijos, prisidėkite. Demografija per svarbi, kad būtų palikta uždariems modeliams ir mokamiems duomenims.",
+    "about.cta.primary": "Išbandyti simuliatorių",
+    "about.cta.secondary": "Prisidėti „GitHub“",
     "theory.title": "Teorija",
     "theory.subtitle": "Kaip veikia modelis",
     "theory.cohort.title": "Kohortų-komponentų metodas",
@@ -2587,6 +2689,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR yra vidutinis vaikų skaičius, kurį moteris turėtų per gyvenimą esant dabartiniams amžiaus specifiniams gimstamumo rodikliams.",
     "theory.tfr.p2":
       "Modelyje didesnis TFR padidina gimimų skaičių reprodukcinio amžiaus moterų grupėse, keisdamas piramidę ir ilgalaikę trajektoriją.",
+    "theory.hero.title": "Gyventojų projekcija",
+    "theory.hero.subtitle": "Teorija ir metodologija",
+    "theory.model.title": "Kaip veikia simuliatorius",
+    "theory.model.p1":
+      "Gyventojų projekcija iš esmės yra apskaitos problema: kiek žmonių gyvena dabar, kiek jų išgyvena, kiek gimsta ir kaip gyventojų skaičius laikui bėgant pasiskirsto tarp amžiaus grupių. Mūsų simuliatorius pradeda nuo bendros populiacijos ir amžiaus bei lyties pasiskirstymo 5 metų grupėmis.",
+    "theory.model.p2":
+      "Šie procentai paverčiami vyrų ir moterų skaičiais kiekvienoje amžiaus grupėje. Tada modelis metų po metų juda į priekį, atnaujindamas gimimus, mirtingumą ir senėjimą tokia tvarka.",
+    "theory.model.p3":
+      "Esminė idėja paprasta: būsima populiacija priklauso ne tik nuo šiandienos dydžio, bet ir nuo to, kas yra jauni, kas seni, ir kaip nuo šiol kinta vaisingumas bei mirtingumas.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Mirtingumas, senėjimas ir išlikimas",
+    "theory.mortality.p1":
+      "Mirtingumas didėja su amžiumi – tai vienas pagrindinių populiacijos dinamikos faktų. Mūsų simuliatoriuje kiekviena amžiaus grupė turi bazinį mirtingumą: labai žemą vaikystėje ir ankstyvoje suaugystėje, ir vis aukštesnį vyresnėse amžiaus grupėse.",
+    "theory.mortality.p2":
+      "Mirtingumo slankiklis šį amžiaus modelį padidina arba sumažina. Pritaikius mirtingumą, išgyvenusi populiacija sensta. Kadangi piramidė naudoja 5 metų grupes, modelis kiekvienais simuliacijos metais perkelia maždaug penktadalį kiekvienos išgyvenusios kohortos į kitą grupę.",
+    "theory.mortality.p3":
+      "Tai sukuria laipsnišką senėjimą vietoj staigių šuolių. Tai taip pat reiškia, kad populiacija su daug vyresnių žmonių gali mažėti net jei vaisingumas beveik nesikeičia, tiesiog todėl, kad didesnė dalis yra veikiama didesnio mirtingumo.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR ir pakaitos lygis",
+    "theory.fertility.p1":
+      "Bendras vaisingumo rodiklis (TFR) – tai vidutinis vaikų skaičius, kurį moteris pagimdytų per gyvenimą esant dabartiniams amžiaus‑specifiniams vaisingumo rodikliams. Maždaug 2,1 TFR dažnai vadinamas pakaitos lygiu mažo mirtingumo visuomenėse: lygiu, kuriame viena karta maždaug pakeičia save.",
+    "theory.fertility.p2":
+      "Kai TFR ilgą laiką išlieka žemiau pakaitos lygio, populiacijos mažėjimas tampa labiau tikėtinas, jei jo nekompensuoja kitos jėgos. Šiame simuliatoriuje TFR yra pagrindinis vaisingumo įėjimas. Modelis suskaičiuoja 15–49 metų moteris ir naudoja pasirinktą TFR, kad įvertintų, kiek gimimų įvyksta kiekvienais metais.",
+    "theory.fertility.p3":
+      "Esamoje implementacijoje metiniai gimimai apytiksliai skaičiuojami kaip 15–49 metų moterų skaičius, padaugintas iš TFR ir padalintas iš 35. Tai paverčia viso gyvenimo vaisingumo rodiklį paprastu metiniu srautu, kartu išlaikant intuiciją, kad daugiau reprodukcinio amžiaus moterų ir didesnis TFR lemia daugiau gimimų.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Amžiaus struktūra ir populiacijos inercija",
+    "theory.ageStructure.p1":
+      "Dvi populiacijos gali turėti tą patį bendrą dydį ir tą patį TFR, tačiau judėti skirtingomis kryptimis, jei jų amžiaus struktūros skiriasi. Jaunesnė populiacija turi daugiau būsimų tėvų. Vyresnė populiacija turi daugiau žmonių arti amžių, kuriuose mirtingumas didelis.",
+    "theory.ageStructure.p2":
+      "Todėl redaguojama populiacijos piramidė šiame įrankyje tokia svarbi. Ji leidžia nustatyti pradinę sudėtį ir pamatyti, kaip ši struktūra sukuria inerciją. Net ir po vaisingumo pokyčių poveikis vystosi palaipsniui, nes amžiaus struktūra ilgai aidi į ateitį.",
+    "theory.data.title": "Duomenų šaltiniai ir inicializacija",
+    "theory.data.p1":
+      "Simuliatorius inicializuoja kiekvieną šalį pagal U.S. Census Bureau International Data Base (IDB) duomenis. Iš šio šaltinio įkeliama bendra populiacija, TFR ir amžiaus bei lyties skaičiai 5 metų grupėse.",
+    "theory.data.p2":
+      "Kiekvienai pasirinktai šaliai programa bando naujausius metus ir naudoja naujausią prieinamą IDB stebėjimą. Šios reikšmės tampa simuliacijos atskaitos tašku: pradinė populiacija, pradinis TFR ir populiacijos piramidė.",
+    "theory.data.p3":
+      "Įkėlus duomenis, simuliacija nebesiejama su šaltinio rinkiniu. Galite keisti pradinę populiaciją, reguliuoti TFR ir mirtingumą, permodeliuoti amžiaus piramidę ir pridėti vaisingumo scenarijų pokyčius, kad ištirtumėte alternatyvias ateitis.",
+    "theory.limitations.title": "Scenarijų pokyčiai ir interpretacija",
+    "theory.limitations.p1":
+      "Vaisingumo pokyčių įvykiai simuliatoriuje yra laiptiniai. Nustačius naują TFR tam tikriems metams, modelis nuo tų metų pereina prie šios reikšmės, kol ją pakeičia kitas įvykis. Tai palengvina tokių scenarijų kaip atsigavimas, stagnacija ar tolesnis nuosmukis testavimą.",
+    "theory.limitations.p2":
+      "Rezultatus geriausia skaityti kaip skaidrius scenarijus: būdą suprasti, kaip vaisingumas, mirtingumas ir amžiaus struktūra sąveikauja laikui bėgant pagal pasirinktus prielaidus.",
+    "theory.limitations.p3a":
+      "Vis dar yra daug erdvės tobulinti modelį. Jei norite patikslinti prielaidas, išplėsti metodiką ar prisidėti geresniais duomenimis, prisidėkite ",
+    "theory.limitations.p3b": ". Dėl bendro grįžtamojo ryšio ir diskusijos naudokite ",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "LeanVibe forumą",
+    "theory.reading.title": "Tolimesni skaitymai",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   el: {
     "app.title": "Μελλοντικές προβολές πληθυσμού",
