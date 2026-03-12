@@ -976,6 +976,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Wat voor samenleving willen we als de bevolking krimpt?",
     "about.q2": "Welke afwegingen accepteren we om de trend te veranderen?",
     "about.opensource": "Open source.",
+    "about.hero.tagline": "Open-source bevolkingssimulator",
+    "about.hero.titleLine1": "Wat gebeurt er",
+    "about.hero.titleLine2": "als de bevolking krimpt?",
+    "about.hero.body":
+      "De vruchtbaarheid daalt. Populaties vergrijzen. De toekomst is onzeker, maar niet ondenkbaar. Verken de cijfers zelf.",
+    "about.hero.ctaPrimary": "Start simulatie",
+    "about.hero.ctaSecondary": "Bekijk op GitHub",
+    "about.stats.oecd": "TFR in de meeste OESO-landen",
+    "about.stats.subreplacement": "van de wereldbevolking in landen onder vervangingsniveau",
+    "about.stats.peak": "verwachte piek van de wereldbevolking (VN, middenvariant)",
+    "about.section1.title": "De stille transformatie",
+    "about.section1.body":
+      "Veel ontwikkelde economieën hebben langdurig lage vruchtbaarheid onder het vervangingsniveau en snelle vergrijzing. Dit hervormt arbeidsmarkten, woningvraag, sociale zekerheid en de intergenerationele balans. De effecten zijn langzaam maar cumulatief; tegen de tijd dat ze zichtbaar worden, is de demografische structuur die ze veroorzaakte al decennia oud.",
+    "about.section2.title": "Buigt de trend af?",
+    "about.section2.body":
+      "Blijft de bevolking voor altijd dalen, of verandert het traject? Beleid, migratie, technologie en veranderende culturele voorkeuren kunnen het pad wijzigen. Pronatalistisch beleid heeft gemengde resultaten: sommige landen zagen bescheiden herstel van de vruchtbaarheid, andere bijna geen effect. Het eerlijke antwoord is dat we het niet weten.",
+    "about.section3.title": "Dystopie of utopie?",
+    "about.section3.body":
+      "Een kleinere bevolking kan minder congestie en lagere emissies betekenen, of krimpende gemeenschappen en fiscale druk. Is een toekomst van ontvolking dystopisch of utopisch? Het antwoord is niet vooraf bepaald. Het hangt af van de keuzes die samenlevingen maken. Daarom is het belangrijk om nu over deze cijfers na te denken.",
+    "about.cta.title": "Laten we samen de toekomst projecteren",
+    "about.cta.body":
+      "Deze simulator is open source. Als je ideeën, data of expertise hebt, draag bij. Demografie is te belangrijk om over te laten aan gesloten modellen en betaalde datasets.",
+    "about.cta.primary": "Probeer de simulator",
+    "about.cta.secondary": "Draag bij op GitHub",
     "theory.title": "Theorie",
     "theory.subtitle": "Hoe het model werkt",
     "theory.cohort.title": "Cohort-componentmethode",
@@ -988,6 +1012,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR is het gemiddelde aantal kinderen dat een vrouw gedurende haar leven zou krijgen bij huidige leeftijdsspecifieke vruchtbaarheidscijfers.",
     "theory.tfr.p2":
       "In het model verhoogt een hogere TFR het aantal geboorten bij vrouwen in de reproductieve leeftijd, wat de piramide en het langetermijnpad verschuift.",
+    "theory.hero.title": "Bevolkingsprojectie",
+    "theory.hero.subtitle": "Theorie en methodologie",
+    "theory.model.title": "Hoe de simulator werkt",
+    "theory.model.p1":
+      "Bevolkingsprojectie is in wezen een boekhoudprobleem: hoeveel mensen leven er nu, hoeveel overleven, hoeveel worden geboren en hoe de bevolking zich in de tijd tussen leeftijdsgroepen verplaatst. Onze simulator start met een totale bevolking en een leeftijd‑ en geslachtsverdeling in 5‑jaarsbanden.",
+    "theory.model.p2":
+      "Die percentages worden omgezet in aantallen mannen en vrouwen in elke leeftijdsband. Het model schuift de bevolking vervolgens jaar voor jaar op en werkt geboorten, sterfgevallen en veroudering in die volgorde bij.",
+    "theory.model.p3":
+      "Het kernidee is dus eenvoudig: de toekomstige bevolking hangt niet alleen af van de huidige omvang, maar ook van wie jong is, wie oud is en hoe vruchtbaarheid en sterfte zich vanaf nu ontwikkelen.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Sterfte, veroudering en overleving",
+    "theory.mortality.p1":
+      "Sterfte neemt toe met de leeftijd, een van de centrale feiten van bevolkingsdynamiek. In onze simulator heeft elke leeftijdsband een basissterfte: zeer laag in kindertijd en vroege volwassenheid en steeds hoger op oudere leeftijden.",
+    "theory.mortality.p2":
+      "De sterfte‑slider schaalt dat leeftijdspatroon omhoog of omlaag. Na toepassing van sterfte veroudert de overlevende bevolking. Omdat de piramide 5‑jaarsbanden gebruikt, verplaatst het model elk simulatiejaar ongeveer een vijfde van elke overlevende cohort naar de volgende band.",
+    "theory.mortality.p3":
+      "Dit zorgt voor geleidelijke veroudering in plaats van abrupte sprongen. Het betekent ook dat een bevolking met veel ouderen kan krimpen, zelfs als de vruchtbaarheid nauwelijks verandert, simpelweg omdat een groter deel aan hogere sterfte wordt blootgesteld.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR en vervangingsniveau",
+    "theory.fertility.p1":
+      "De totale vruchtbaarheid (TFR) is het gemiddelde aantal kinderen dat een vrouw in haar leven zou krijgen bij de huidige leeftijdsspecifieke vruchtbaarheidspercentages. Een TFR van ongeveer 2,1 wordt in laag‑sterftesamenlevingen vaak het vervangingsniveau genoemd: het niveau waarop een generatie zichzelf ongeveer vervangt.",
+    "theory.fertility.p2":
+      "Wanneer TFR lang onder het vervangingsniveau blijft, wordt bevolkingskrimp waarschijnlijker, tenzij andere krachten dit compenseren. In deze simulator is TFR de belangrijkste vruchtbaarheidsinput. Het model telt vrouwen van 15–49 jaar en gebruikt de gekozen TFR om het jaarlijkse aantal geboorten te schatten.",
+    "theory.fertility.p3":
+      "In de huidige implementatie worden jaarlijkse geboorten benaderd als vrouwen van 15–49 jaar vermenigvuldigd met TFR en gedeeld door 35. Dit zet een levenslange vruchtbaarheidsmaat om in een eenvoudige jaarlijkse stroom en behoudt de intuïtie dat meer vrouwen in de vruchtbare leeftijd en een hogere TFR tot meer geboorten leiden.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Leeftijdsstructuur en bevolkingsmomentum",
+    "theory.ageStructure.p1":
+      "Twee populaties kunnen dezelfde totale omvang en dezelfde TFR hebben, maar in verschillende richtingen bewegen als hun leeftijdsstructuren verschillen. Een jongere bevolking bevat meer toekomstige ouders. Een oudere bevolking bevat meer mensen dicht bij leeftijden met hoge sterfte.",
+    "theory.ageStructure.p2":
+      "Daarom is de bewerkbare bevolkingspiramide zo belangrijk in deze app. Ze laat je de startcompositie instellen en zien hoe die structuur momentum creëert. Zelfs na veranderingen in vruchtbaarheid ontvouwen de effecten zich geleidelijk, omdat de leeftijdsstructuur nog lang doorwerkt in de toekomst.",
+    "theory.data.title": "Databronnen en initialisatie",
+    "theory.data.p1":
+      "De simulator initialiseert elk land met data uit de International Data Base (IDB) van het U.S. Census Bureau. Daaruit laadt hij totale bevolking, TFR en leeftijd‑/geslachtsaantallen in 5‑jaarsbanden.",
+    "theory.data.p2":
+      "Voor elk geselecteerd land probeert de app recente jaren en gebruikt de meest recente beschikbare IDB‑waarneming. Die waarden worden het startpunt van de simulatie: beginpopulatie, begin‑TFR en bevolkingspiramide.",
+    "theory.data.p3":
+      "Na het laden is de simulatie niet langer aan de brondata gebonden. Je kunt de beginpopulatie aanpassen, TFR en sterfte wijzigen, de leeftijdspiramide hervormen en vruchtbaarheidsscenario’s toevoegen om alternatieve toekomsten te verkennen.",
+    "theory.limitations.title": "Scenarioveranderingen en interpretatie",
+    "theory.limitations.p1":
+      "Vruchtbaarheidsveranderingen in de simulator zijn stapsgewijs. Wanneer je een nieuwe TFR voor een bepaald jaar instelt, schakelt het model vanaf dat jaar naar die waarde tot een volgend evenement het vervangt. Dit maakt het eenvoudig om scenario’s zoals herstel, stagnatie of verdere daling te testen.",
+    "theory.limitations.p2":
+      "De uitkomsten kun je het best lezen als transparante scenarioresultaten: een manier om te begrijpen hoe vruchtbaarheid, sterfte en leeftijdsstructuur door de tijd heen onder jouw aannames samenhangen.",
+    "theory.limitations.p3a":
+      "Er is nog veel ruimte om het model te verbeteren. Als je aannames wilt verfijnen, de methodologie wilt uitbreiden of betere data wilt bijdragen, draag dan bij op",
+    "theory.limitations.p3b": ". Voor algemene feedback en discussie kun je het",
+    "theory.limitations.p3c": " gebruiken.",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "LeanVibe‑forum",
+    "theory.reading.title": "Verdere lectuur",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   sv: {
     "app.title": "Framtida befolkningsprognoser",
@@ -1037,7 +1115,7 @@ const messages: Record<Locale, MessageMap> = {
     "about.title": "Om",
     "about.subtitle": "Befolkningsminskning i utvecklade länder",
     "about.p1":
-      "Många utvecklade ekonomier har varaktigt låg fruktsamhet under ersättningsnivån och snabb åldrande. Det omformar arbetsmarknader, bostadsefterfrågan, socialförsäkring och generationsbalans.",
+      "Många utvecklade ekonomier har varaktigt låg fruktsamhet under ersättningsnivån och snabbt åldrande. Det omformar arbetsmarknader, bostadsefterfrågan, socialförsäkring och generationsbalans.",
     "about.p2":
       "Kommer befolkningen att fortsätta minska, eller böjer trenden av? Politik, migration, teknik och förändrade preferenser kan ändra banan.",
     "about.p3":
@@ -1045,6 +1123,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Vilket samhälle vill vi ha om befolkningen krymper?",
     "about.q2": "Vilka avvägningar är vi villiga att göra för att ändra trenden?",
     "about.opensource": "Öppen källkod.",
+    "about.hero.tagline": "Öppen källkods-befolkningssimulator",
+    "about.hero.titleLine1": "Vad händer",
+    "about.hero.titleLine2": "när befolkningen krymper?",
+    "about.hero.body":
+      "Fertiliteten sjunker. Befolkningar åldras. Framtiden är osäker, men inte oföreställbar. Utforska siffrorna själv.",
+    "about.hero.ctaPrimary": "Börja simulera",
+    "about.hero.ctaSecondary": "Visa på GitHub",
+    "about.stats.oecd": "TFR i de flesta OECD-länder",
+    "about.stats.subreplacement": "av världens befolkning i länder under ersättningsnivån",
+    "about.stats.peak": "förväntad topp för världsbefolkningen (FN, medelvariant)",
+    "about.section1.title": "Den tysta omvandlingen",
+    "about.section1.body":
+      "Många utvecklade ekonomier har långvarigt låg fertilitet under ersättningsnivån och snabbt åldrande. Det omformar arbetsmarknader, bostadsefterfrågan, socialförsäkring och generationsbalans. Effekterna är långsamma men kumulativa, och när de blir synliga är den demografiska struktur som skapade dem redan decennier gammal.",
+    "about.section2.title": "Vänder trenden?",
+    "about.section2.body":
+      "Kommer befolkningen att fortsätta minska för alltid, eller ändras banan? Politik, migration, teknik och förändrade kulturella preferenser kan ändra kursen. Pronatalistisk politik har gett blandade resultat: vissa länder har sett måttliga återhämtningar i fertilitet, andra nästan ingen effekt. Det ärliga svaret är att vi inte vet.",
+    "about.section3.title": "Dystopi eller utopi?",
+    "about.section3.body":
+      "En mindre befolkning kan innebära mindre trängsel och lägre utsläpp, eller krympande samhällen och finanspolitisk press. Är en framtid med avfolkning dystopisk eller utopisk? Svaret är inte förutbestämt. Det beror på de val samhällen gör. Därför är det viktigt att tänka på dessa siffror nu.",
+    "about.cta.title": "Låt oss projicera framtiden tillsammans",
+    "about.cta.body":
+      "Den här simulatorn är öppen källkod. Om du har idéer, data eller expertis, bidra. Demografi är för viktig för att lämnas till slutna modeller och betaldata.",
+    "about.cta.primary": "Prova simulatorn",
+    "about.cta.secondary": "Bidra på GitHub",
     "theory.title": "Teori",
     "theory.subtitle": "Hur modellen fungerar",
     "theory.cohort.title": "Kohort-komponentmetoden",
@@ -1057,6 +1159,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR är det genomsnittliga antal barn en kvinna skulle få under sitt liv med dagens åldersspecifika fertilitetstal.",
     "theory.tfr.p2":
       "I modellen ökar en högre TFR födslarna i fertil ålder, vilket flyttar pyramiden och den långsiktiga banan.",
+    "theory.hero.title": "Befolkningsprojektion",
+    "theory.hero.subtitle": "Teori och metodik",
+    "theory.model.title": "Så fungerar simulatorn",
+    "theory.model.p1":
+      "Befolkningsprojektion är i grunden en bokföringsfråga: hur många som lever nu, hur många som överlever, hur många som föds och hur befolkningen förskjuts mellan åldersgrupper över tid. Vår simulator startar med en total befolkning och en ålders- och könsfördelning i 5-årsband.",
+    "theory.model.p2":
+      "Dessa procenttal omvandlas till antal män och kvinnor i varje åldersband. Modellen går sedan fram år för år och uppdaterar födslar, dödsfall och åldrande i den ordningen.",
+    "theory.model.p3":
+      "Kärnidén är enkel: den framtida befolkningen beror inte bara på dagens storlek, utan också på vilka som är unga, vilka som är äldre och hur fertilitet och mortalitet utvecklas framöver.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Dödlighet, åldrande och överlevnad",
+    "theory.mortality.p1":
+      "Dödligheten ökar med åldern, vilket är ett av befolkningsdynamikens centrala faktum. I vår simulator har varje åldersband en grundläggande dödlighet: mycket låg i barndom och tidig vuxen ålder, successivt högre i äldre åldrar.",
+    "theory.mortality.p2":
+      "Skjutreglaget för dödlighet skalar detta åldersmönster upp eller ned. Efter att dödsfall har tillämpats åldras den överlevande befolkningen. Eftersom pyramiden använder 5-årsband flyttar modellen ungefär en femtedel av varje överlevande kohort till nästa band varje simulerat år.",
+    "theory.mortality.p3":
+      "Detta skapar gradvis åldrande i stället för abrupta hopp. Det betyder också att en befolkning med många äldre kan krympa även om fertiliteten inte förändras mycket, helt enkelt eftersom en större andel är exponerad för högre dödlighet.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR och ersättningsnivå",
+    "theory.fertility.p1":
+      "Total fertilitet (TFR) är det genomsnittliga antal barn en kvinna skulle få under sin livstid givet nuvarande åldersspecifika fertilitetsnivåer. En TFR på cirka 2,1 kallas ofta ersättningsnivå i samhällen med låg dödlighet: den nivå där en generation ungefär ersätter sig själv.",
+    "theory.fertility.p2":
+      "När TFR ligger under ersättningsnivån under lång tid blir befolkningsminskning mer sannolik om det inte motverkas av andra krafter. I den här simulatorn är TFR den huvudsakliga fertilitetsinputen. Modellen räknar kvinnor i åldern 15–49 och använder vald TFR för att uppskatta antalet födslar varje år.",
+    "theory.fertility.p3":
+      "I den nuvarande implementeringen approximeras årliga födslar som kvinnor 15–49 år multiplicerat med TFR och delat med 35. Det omvandlar ett livstidsmått till ett enkelt årligt flöde samtidigt som intuitionen bevaras att fler kvinnor i fertil ålder och högre TFR leder till fler födslar.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Åldersstruktur och befolkningsmomentum",
+    "theory.ageStructure.p1":
+      "Två befolkningar kan ha samma totala storlek och samma TFR men ändå röra sig i olika riktningar om deras åldersstrukturer skiljer sig åt. En yngre befolkning har fler framtida föräldrar. En äldre befolkning har fler människor nära åldrar med hög dödlighet.",
+    "theory.ageStructure.p2":
+      "Det är därför den redigerbara befolkningspyramiden är så viktig i den här appen. Den låter dig sätta startkompositionen och se hur den strukturen skapar momentum. Även efter förändringar i fertilitet utvecklas effekterna gradvis eftersom åldersstrukturen fortsätter att eka in i framtiden.",
+    "theory.data.title": "Datakällor och initiering",
+    "theory.data.p1":
+      "Simulatorn initierar varje land med data från U.S. Census Bureau International Data Base (IDB). Därifrån laddas total befolkning, TFR och ålders- och könsräkningar i 5-årsband.",
+    "theory.data.p2":
+      "För varje valt land testar appen nyliga år och använder den senast tillgängliga IDB-observationen. Dessa värden blir utgångspunkten för simuleringen: initial befolkning, initial TFR och befolkningspyramid.",
+    "theory.data.p3":
+      "Efter att data har laddats är simuleringen inte längre knuten till källdatat. Du kan ändra den initiala befolkningen, justera TFR och dödlighet, omforma ålderspyramiden och lägga till fertilitetsscenarier för att utforska alternativa framtider.",
+    "theory.limitations.title": "Scenarioändringar och tolkning",
+    "theory.limitations.p1":
+      "Fertilitetsförändringshändelser i simulatorn är stegvisa ändringar. När du sätter en ny TFR för ett visst år växlar modellen till det värdet från och med det året tills en annan händelse ersätter det. Det gör det lätt att testa scenarier som återhämtning, stagnation eller ytterligare nedgång.",
+    "theory.limitations.p2":
+      "Utfallet bör läsas som transparenta scenarioresultat: ett sätt att förstå hur fertilitet, dödlighet och åldersstruktur samverkar över tid under de antaganden du väljer.",
+    "theory.limitations.p3a":
+      "Det finns fortfarande gott om utrymme att förbättra modellen. Om du vill förfina antaganden, utöka metodiken eller bidra med bättre data, bidra på",
+    "theory.limitations.p3b": ". För allmän feedback och diskussion, använd",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "LeanVibe-forumet",
+    "theory.reading.title": "Vidare läsning",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   da: {
     "app.title": "Fremtidige befolkningsfremskrivninger",
@@ -1390,6 +1546,30 @@ const messages: Record<Locale, MessageMap> = {
     "about.q1": "Jakiego społeczeństwa chcemy, jeśli populacja się kurczy?",
     "about.q2": "Jakie kompromisy jesteśmy gotowi zaakceptować, by zmienić trend?",
     "about.opensource": "Otwarty kod źródłowy.",
+    "about.hero.tagline": "Otwarty symulator populacji",
+    "about.hero.titleLine1": "Co się stanie",
+    "about.hero.titleLine2": "gdy populacja będzie się kurczyć?",
+    "about.hero.body":
+      "Dzietność spada. Populacje się starzeją. Przyszłość jest niepewna, ale możliwa do wyobrażenia. Sprawdź liczby samodzielnie.",
+    "about.hero.ctaPrimary": "Zacznij symulację",
+    "about.hero.ctaSecondary": "Zobacz na GitHubie",
+    "about.stats.oecd": "TFR w większości krajów OECD",
+    "about.stats.subreplacement": "światowej populacji w krajach poniżej poziomu zastępowalności",
+    "about.stats.peak": "prognozowany szczyt populacji świata (ONZ, wariant średni)",
+    "about.section1.title": "Cicha transformacja",
+    "about.section1.body":
+      "Wiele gospodarek rozwiniętych doświadcza trwałej dzietności poniżej poziomu zastępowalności i szybkiego starzenia się. To przekształca rynki pracy, popyt mieszkaniowy, zabezpieczenia społeczne i równowagę międzypokoleniową. Skutki są powolne, lecz kumulują się, a gdy stają się widoczne, struktura demograficzna, która je wytworzyła, ma już dziesięciolecia.",
+    "about.section2.title": "Czy trend się odwróci?",
+    "about.section2.body":
+      "Czy populacja będzie spadać bez końca, czy zmieni się trajektoria? Polityka, migracje, technologia i zmieniające się preferencje kulturowe mogą zmienić bieg. Polityki pronatalistyczne dały mieszane rezultaty: w niektórych krajach widać umiarkowane odbicia dzietności, w innych niemal brak efektu. Szczera odpowiedź brzmi: nie wiemy.",
+    "about.section3.title": "Dystopia czy utopia?",
+    "about.section3.body":
+      "Mniejsza populacja może oznaczać mniejsze korki i emisje albo kurczące się społeczności i presję fiskalną. Czy przyszłość depopulacji jest dystopijna czy utopijna? Odpowiedź nie jest z góry dana. Zależy od decyzji podejmowanych przez społeczeństwa. Dlatego warto myśleć o tych liczbach już teraz.",
+    "about.cta.title": "Prognozujmy przyszłość razem",
+    "about.cta.body":
+      "Ten symulator jest open source. Jeśli masz pomysły, dane lub wiedzę, wnieś wkład. Demografia jest zbyt ważna, by zostawiać ją zamkniętym modelom i płatnym danym.",
+    "about.cta.primary": "Wypróbuj symulator",
+    "about.cta.secondary": "Wnieś wkład na GitHubie",
     "theory.title": "Teoria",
     "theory.subtitle": "Jak działa model",
     "theory.cohort.title": "Metoda kohortowo-komponentowa",
@@ -1402,6 +1582,60 @@ const messages: Record<Locale, MessageMap> = {
       "TFR to średnia liczba dzieci, które kobieta urodziłaby w ciągu życia przy obecnych współczynnikach dzietności według wieku.",
     "theory.tfr.p2":
       "W modelu wyższy TFR zwiększa liczbę urodzeń w wieku rozrodczym, co przesuwa piramidę i długoterminową ścieżkę.",
+    "theory.hero.title": "Projekcja populacji",
+    "theory.hero.subtitle": "Teoria i metodologia",
+    "theory.model.title": "Jak działa symulator",
+    "theory.model.p1":
+      "Projekcja populacji to w gruncie rzeczy problem rachunkowy: ilu ludzi żyje teraz, ilu przeżywa, ilu się rodzi oraz jak populacja przesuwa się między grupami wieku w czasie. Nasz symulator startuje z całkowitą populacją i rozkładem według wieku i płci w 5‑letnich przedziałach.",
+    "theory.model.p2":
+      "Te procenty są zamieniane na liczby mężczyzn i kobiet w każdym przedziale wieku. Model następnie przesuwa populację rok po roku, aktualizując urodzenia, zgony i starzenie się w tej kolejności.",
+    "theory.model.p3":
+      "Zasadnicza idea jest więc prosta: przyszła populacja zależy nie tylko od dzisiejszej liczebności, lecz także od tego, kto jest młody, kto jest stary, i jak od teraz będą ewoluować dzietność oraz umieralność.",
+    "theory.model.formula": "Population(t+1) = Survivors(t) + Births(t)",
+    "theory.mortality.title": "Umieralność, starzenie się i przeżycie",
+    "theory.mortality.p1":
+      "Umieralność rośnie wraz z wiekiem, co jest jednym z kluczowych faktów dynamiki populacji. W naszym symulatorze każde pasmo wieku ma bazową stopę umieralności: bardzo niską w dzieciństwie i wczesnej dorosłości oraz coraz wyższą w starszych grupach.",
+    "theory.mortality.p2":
+      "Suwak umieralności skaluje ten wzorzec wieku w górę lub w dół. Po zastosowaniu zgonów populacja ocalała się starzeje. Ponieważ piramida używa 5‑letnich przedziałów, model co roku przesuwa około jedną piątą każdej ocalałej kohorty do następnego przedziału.",
+    "theory.mortality.p3":
+      "To tworzy stopniowe starzenie zamiast gwałtownych skoków. Oznacza to także, że populacja z dużym udziałem osób starszych może się kurczyć nawet przy niewielkich zmianach dzietności, po prostu dlatego, że większa część jest narażona na wyższą umieralność.",
+    "theory.mortality.formula": "rate(age) = clamp(baseMortality(age) x deathRate / 0.008, 0, 0.9)",
+    "theory.fertility.title": "TFR i poziom zastępowalności",
+    "theory.fertility.p1":
+      "Całkowity współczynnik dzietności (TFR) to średnia liczba dzieci, które kobieta urodziłaby w ciągu życia przy obecnych płodnościach według wieku. TFR około 2,1 jest często nazywany poziomem zastępowalności w społeczeństwach o niskiej umieralności: poziomem, na którym jedno pokolenie mniej więcej zastępuje siebie.",
+    "theory.fertility.p2":
+      "Gdy TFR utrzymuje się długo poniżej zastępowalności, spadek populacji staje się bardziej prawdopodobny, o ile nie zrównoważą go inne siły. W tym symulatorze TFR jest głównym wejściem dzietności. Model liczy kobiety w wieku 15–49 lat i używa wybranego TFR do oszacowania liczby urodzeń w każdym roku.",
+    "theory.fertility.p3":
+      "W obecnej implementacji roczne urodzenia są przybliżane jako liczba kobiet w wieku 15–49 lat pomnożona przez TFR i podzielona przez 35. To przekształca miarę dzietności życiowej w prosty roczny przepływ, zachowując intuicję, że więcej kobiet w wieku rozrodczym i wyższy TFR prowadzą do większej liczby urodzeń.",
+    "theory.fertility.formula": "Births(t) ~= Women15-49(t) x TFR(t) / 35",
+    "theory.ageStructure.title": "Struktura wieku i pęd demograficzny",
+    "theory.ageStructure.p1":
+      "Dwie populacje mogą mieć ten sam rozmiar i ten sam TFR, a mimo to zmierzać w różnych kierunkach, jeśli ich struktury wieku są różne. Młodsza populacja zawiera więcej przyszłych rodziców. Starsza populacja zawiera więcej osób blisko wieku o wysokiej umieralności.",
+    "theory.ageStructure.p2":
+      "Dlatego edytowalna piramida populacji jest tak ważna w tej aplikacji. Pozwala ustawić początkowy skład populacji i zobaczyć, jak ta struktura tworzy inercję. Nawet po zmianach dzietności efekty rozwijają się stopniowo, ponieważ struktura wieku długo rezonuje w przyszłość.",
+    "theory.data.title": "Źródła danych i inicjalizacja",
+    "theory.data.p1":
+      "Symulator inicjalizuje każdy kraj danymi z International Data Base (IDB) U.S. Census Bureau. Z tego źródła pobiera całkowitą populację, TFR oraz liczebności według wieku i płci w 5‑letnich przedziałach.",
+    "theory.data.p2":
+      "Dla każdego wybranego kraju aplikacja sprawdza ostatnie lata i używa najnowszej dostępnej obserwacji IDB. Te wartości stają się punktem wyjścia symulacji: populacją początkową, początkowym TFR i piramidą populacji.",
+    "theory.data.p3":
+      "Po wczytaniu danych symulacja nie jest już związana z pierwotnym zbiorem. Możesz zmienić populację początkową, dostosować TFR i umieralność, przebudować piramidę wieku i dodać zmiany scenariuszy dzietności, aby badać alternatywne przyszłości.",
+    "theory.limitations.title": "Zmiany scenariuszy i interpretacja",
+    "theory.limitations.p1":
+      "Zdarzenia zmiany dzietności w symulatorze to skokowe zmiany. Gdy ustawisz nowy TFR dla danego roku, model przełącza się na tę wartość od tego roku, aż zastąpi ją kolejne zdarzenie. Ułatwia to testowanie scenariuszy takich jak odbicie, stagnacja czy dalszy spadek.",
+    "theory.limitations.p2":
+      "Wyniki najlepiej czytać jako przejrzyste rezultaty scenariuszy: sposób na zrozumienie, jak dzietność, umieralność i struktura wieku oddziałują w czasie przy wybranych założeniach.",
+    "theory.limitations.p3a":
+      "Wciąż jest dużo miejsca na ulepszenia modelu. Jeśli chcesz dopracować założenia, rozszerzyć metodologię lub wnieść lepsze dane, wnieś wkład na",
+    "theory.limitations.p3b": ". W przypadku ogólnych uwag i dyskusji skorzystaj z",
+    "theory.limitations.p3c": ".",
+    "theory.limitations.github": "GitHub",
+    "theory.limitations.forum": "forum LeanVibe",
+    "theory.reading.title": "Dalsza lektura",
+    "theory.reading.1": "Preston, Heuveline & Guillot, Demography: Measuring and Modeling Population Processes",
+    "theory.reading.2": "United Nations, World Population Prospects methodology",
+    "theory.reading.3": "Bongaarts & Feeney, On the quantum and tempo of fertility (Population and Development Review, 1998)",
+    "theory.reading.4": "Lee & Carter, Modeling and Forecasting U.S. Mortality (JASA, 1992)",
   },
   cs: {
     "app.title": "Budoucí projekce populace",
