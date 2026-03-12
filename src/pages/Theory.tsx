@@ -109,7 +109,7 @@ export default function Theory() {
             ))}
             {section.title === t(locale, "theory.limitations.title") ? (
               <p>
-                {t(locale, "theory.limitations.p3")}{" "}
+                {t(locale, "theory.limitations.p3a")}{" "}
                 <a
                   href="https://github.com/jasoncnyu/future-population"
                   target="_blank"
@@ -119,7 +119,16 @@ export default function Theory() {
                   <Github className="h-4 w-4" />
                   {t(locale, "theory.limitations.github")}
                 </a>
-                .
+                {t(locale, "theory.limitations.p3b")}{" "}
+                <a
+                  href="https://leanvibe.io/vibe/future-population-simulator-mmmbonpo?tab=forum"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-foreground underline underline-offset-4 transition-colors hover:text-primary"
+                >
+                  {t(locale, "theory.limitations.forum")}
+                </a>
+                {t(locale, "theory.limitations.p3c")}
               </p>
             ) : null}
             {section.formula ? <FormulaBlock>{section.formula}</FormulaBlock> : null}

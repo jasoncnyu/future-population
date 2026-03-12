@@ -5,6 +5,8 @@ import { ArrowRight, Github, Globe, HelpCircle, TrendingDown, Users } from "luci
 import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/lib/locale-context";
+import { t } from "@/lib/i18n";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -45,6 +47,7 @@ function StatCard({
 }
 
 export default function About() {
+  const { locale } = useLocale();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -90,12 +93,12 @@ export default function About() {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="mb-4 text-sm font-medium uppercase tracking-widest text-primary">
-              Open-Source Population Simulator
+              {t(locale, "about.hero.tagline")}
             </p>
             <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-foreground md:text-7xl">
-              What happens
+              {t(locale, "about.hero.titleLine1")}
               <br />
-              <span className="text-muted-foreground">when we shrink?</span>
+              <span className="text-muted-foreground">{t(locale, "about.hero.titleLine2")}</span>
             </h1>
           </motion.div>
 
@@ -105,8 +108,7 @@ export default function About() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl"
           >
-            Fertility is falling. Populations are ageing. The future is uncertain, but it is not unimaginable. Explore
-            the numbers yourself.
+            {t(locale, "about.hero.body")}
           </motion.p>
 
           <motion.div
@@ -116,15 +118,15 @@ export default function About() {
             className="flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
             <Button asChild size="lg" className="gap-2 text-base">
-              <Link to="/en">
-                Start simulating
+              <Link to={`/${locale}`}>
+                {t(locale, "about.hero.ctaPrimary")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="gap-2 text-base">
               <a href="https://github.com/jasoncnyu/future-population" target="_blank" rel="noopener noreferrer">
                 <Github className="h-4 w-4" />
-                View on GitHub
+                {t(locale, "about.hero.ctaSecondary")}
               </a>
             </Button>
           </motion.div>
@@ -149,9 +151,9 @@ export default function About() {
           variants={stagger}
           className="grid grid-cols-1 gap-6 sm:grid-cols-3"
         >
-          <StatCard icon={TrendingDown} value="< 2.1" label="TFR in most OECD countries" index={0} />
-          <StatCard icon={Users} value="61%" label="of world population in sub-replacement countries" index={1} />
-          <StatCard icon={Globe} value="2086" label="projected peak of world population (UN medium)" index={2} />
+          <StatCard icon={TrendingDown} value="< 2.1" label={t(locale, "about.stats.oecd")} index={0} />
+          <StatCard icon={Users} value="61%" label={t(locale, "about.stats.subreplacement")} index={1} />
+          <StatCard icon={Globe} value="2086" label={t(locale, "about.stats.peak")} index={2} />
         </motion.div>
       </section>
 
@@ -166,13 +168,10 @@ export default function About() {
         >
           <div className="h-px w-12 bg-primary" />
           <h2 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-            The quiet transformation
+            {t(locale, "about.section1.title")}
           </h2>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Many developed economies are facing sustained fertility below replacement and rapid ageing. This reshapes
-            labor markets, housing demand, social security, and intergenerational balance. The effects are slow, but
-            they are compounding, and by the time they become obvious, the demographic structure that produced them is
-            already decades old.
+            {t(locale, "about.section1.body")}
           </p>
         </motion.div>
 
@@ -186,13 +185,10 @@ export default function About() {
         >
           <div className="h-px w-12 bg-primary" />
           <h2 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-            Will the trend bend?
+            {t(locale, "about.section2.title")}
           </h2>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Will population keep falling forever, or will the trajectory change? Policy, migration, technology, and
-            shifting cultural preferences could all alter the path. Pronatalist policies have shown mixed results:
-            some countries have seen modest fertility rebounds, while others have seen almost no effect. The honest
-            answer is that we do not know.
+            {t(locale, "about.section2.body")}
           </p>
         </motion.div>
 
@@ -206,13 +202,10 @@ export default function About() {
         >
           <div className="h-px w-12 bg-primary" />
           <h2 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-            Dystopia or utopia?
+            {t(locale, "about.section3.title")}
           </h2>
           <p className="text-lg leading-relaxed text-muted-foreground">
-            A smaller population could mean less congestion and lower emissions, or it could mean shrinking
-            communities and fiscal stress. Is a depopulating future dystopian or utopian? The answer is not
-            predetermined. It depends on the choices societies make along the way. That is why it matters to think
-            about these numbers now.
+            {t(locale, "about.section3.body")}
           </p>
         </motion.div>
       </section>
@@ -227,23 +220,22 @@ export default function About() {
         >
           <HelpCircle className="mx-auto h-8 w-8 text-primary" />
           <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-            Let&apos;s project the future together
+            {t(locale, "about.cta.title")}
           </h2>
           <p className="mx-auto max-w-xl text-lg leading-relaxed text-muted-foreground">
-            This simulator is open source. If you have ideas, data, or expertise, contribute. Demography is too
-            important to leave to closed models and paywalled datasets.
+            {t(locale, "about.cta.body")}
           </p>
           <div className="flex flex-col items-center justify-center gap-4 pt-2 sm:flex-row">
             <Button asChild size="lg" className="gap-2">
-              <Link to="/en">
-                Try the simulator
+              <Link to={`/${locale}`}>
+                {t(locale, "about.cta.primary")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="gap-2">
               <a href="https://github.com/jasoncnyu/future-population" target="_blank" rel="noopener noreferrer">
                 <Github className="h-4 w-4" />
-                Contribute on GitHub
+                {t(locale, "about.cta.secondary")}
               </a>
             </Button>
           </div>
