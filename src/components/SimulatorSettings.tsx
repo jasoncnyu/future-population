@@ -10,6 +10,7 @@ import {
   getScaledMortalityRate,
   getScaledSexMortalityRate,
   type FertilityChangeEvent,
+  type MigrationChangeEvent,
 } from "@/lib/population-simulator";
 import PopulationPyramid, { type AgeGroupGender } from "./PopulationPyramid";
 import type { Locale } from "@/lib/i18n";
@@ -26,8 +27,12 @@ interface SimulatorSettingsProps {
   setEndYear: (v: number) => void;
   deathRate: number;
   setDeathRate: (v: number) => void;
+  netMigration: number;
+  setNetMigration: (v: number) => void;
   fertilityChanges: FertilityChangeEvent[];
   setFertilityChanges: (v: FertilityChangeEvent[]) => void;
+  migrationChanges: MigrationChangeEvent[];
+  setMigrationChanges: (v: MigrationChangeEvent[]) => void;
   ageGroups: AgeGroupGender[];
   setAgeGroups: (v: AgeGroupGender[]) => void;
   locale: Locale;
@@ -44,8 +49,12 @@ export default function SimulatorSettings({
   setEndYear,
   deathRate,
   setDeathRate,
+  netMigration,
+  setNetMigration,
   fertilityChanges,
   setFertilityChanges,
+  migrationChanges,
+  setMigrationChanges,
   ageGroups,
   setAgeGroups,
   locale,
@@ -68,6 +77,27 @@ export default function SimulatorSettings({
   const updateEvent = (id: string, field: "year" | "tfr", value: number) => {
     setFertilityChanges(
       fertilityChanges.map((e) => (e.id === id ? { ...e, [field]: value } : e))
+    );
+  };
+
+  const addMigrationEvent = () => {
+    const newYear =
+      migrationChanges.length > 0
+        ? Math.min(migrationChanges[migrationChanges.length - 1].year + 10, endYear)
+        : startYear + 10;
+    setMigrationChanges([
+      ...migrationChanges,
+      { id: crypto.randomUUID(), year: newYear, netMigration },
+    ]);
+  };
+
+  const removeMigrationEvent = (id: string) => {
+    setMigrationChanges(migrationChanges.filter((e) => e.id !== id));
+  };
+
+  const updateMigrationEvent = (id: string, field: "year" | "netMigration", value: number) => {
+    setMigrationChanges(
+      migrationChanges.map((e) => (e.id === id ? { ...e, [field]: value } : e))
     );
   };
 
@@ -145,6 +175,16 @@ export default function SimulatorSettings({
             </Accordion>
           </div>
 
+          <div className="space-y-2">
+            <Label>{t(locale, "settings.netMigration")}</Label>
+            <Input
+              type="number"
+              value={netMigration}
+              onChange={(e) => setNetMigration(Number(e.target.value))}
+              step={1000}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label>{t(locale, "settings.startYear")}</Label>
@@ -205,6 +245,61 @@ export default function SimulatorSettings({
                 variant="ghost"
                 className="h-8 w-8 text-destructive hover:text-destructive"
                 onClick={() => removeEvent(event.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">{t(locale, "settings.migrationScenario")}</CardTitle>
+            <Button size="sm" variant="outline" onClick={addMigrationEvent}>
+              <Plus className="h-4 w-4 mr-1" />
+              {t(locale, "settings.addChange")}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {migrationChanges.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-2">{t(locale, "settings.noChanges")}</p>
+          )}
+          {migrationChanges.map((event) => (
+            <div
+              key={event.id}
+              className="flex items-end gap-2 rounded-lg border border-border bg-muted/30 p-3"
+            >
+              <div className="flex-1 space-y-1">
+                <Label className="text-xs">{t(locale, "settings.changeYear")}</Label>
+                <Input
+                  type="number"
+                  value={event.year}
+                  onChange={(e) => updateMigrationEvent(event.id, "year", Number(e.target.value))}
+                  min={startYear}
+                  max={endYear}
+                  className="h-8"
+                />
+              </div>
+              <div className="flex-1 space-y-1">
+                <Label className="text-xs">{t(locale, "settings.changeMigration")}</Label>
+                <Input
+                  type="number"
+                  value={event.netMigration}
+                  onChange={(e) =>
+                    updateMigrationEvent(event.id, "netMigration", Number(e.target.value))
+                  }
+                  step={1000}
+                  className="h-8"
+                />
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-destructive hover:text-destructive"
+                onClick={() => removeMigrationEvent(event.id)}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

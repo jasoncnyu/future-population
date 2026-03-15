@@ -2,7 +2,7 @@
 import SimulatorSettings from "@/components/SimulatorSettings";
 import SimulatorChart from "@/components/SimulatorChart";
 import SimulatorSummary from "@/components/SimulatorSummary";
-import { simulatePopulation, type FertilityChangeEvent } from "@/lib/population-simulator";
+import { simulatePopulation, type FertilityChangeEvent, type MigrationChangeEvent } from "@/lib/population-simulator";
 import PopulationPyramid, { DEFAULT_AGE_GROUPS, type AgeGroupGender } from "@/components/PopulationPyramid";
 import AppHeader from "@/components/AppHeader";
 import { useLocale } from "@/lib/locale-context";
@@ -27,7 +27,9 @@ const Index = () => {
   const [startYear, setStartYear] = useState(2024);
   const [endYear, setEndYear] = useState(2124);
   const [deathRate, setDeathRate] = useState(0.008);
+  const [netMigration, setNetMigration] = useState(0);
   const [fertilityChanges, setFertilityChanges] = useState<FertilityChangeEvent[]>([]);
+  const [migrationChanges, setMigrationChanges] = useState<MigrationChangeEvent[]>([]);
   const [ageGroups, setAgeGroups] = useState<AgeGroupGender[]>(DEFAULT_AGE_GROUPS);
 
   useEffect(() => {
@@ -67,9 +69,21 @@ const Index = () => {
         endYear,
         deathRate,
         fertilityChanges,
+        netMigration,
+        migrationChanges,
         ageGroups,
       }),
-    [initialPopulation, initialTfr, startYear, endYear, deathRate, fertilityChanges, ageGroups]
+    [
+      initialPopulation,
+      initialTfr,
+      startYear,
+      endYear,
+      deathRate,
+      fertilityChanges,
+      netMigration,
+      migrationChanges,
+      ageGroups,
+    ]
   );
 
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
@@ -138,8 +152,12 @@ const Index = () => {
             setEndYear={setEndYear}
             deathRate={deathRate}
             setDeathRate={setDeathRate}
+            netMigration={netMigration}
+            setNetMigration={setNetMigration}
             fertilityChanges={fertilityChanges}
             setFertilityChanges={setFertilityChanges}
+            migrationChanges={migrationChanges}
+            setMigrationChanges={setMigrationChanges}
             ageGroups={ageGroups}
             setAgeGroups={setAgeGroups}
             locale={locale}

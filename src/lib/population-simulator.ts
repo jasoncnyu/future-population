@@ -6,6 +6,12 @@ export interface FertilityChangeEvent {
   tfr: number;
 }
 
+export interface MigrationChangeEvent {
+  id: string;
+  year: number;
+  netMigration: number;
+}
+
 export interface SimulationParams {
   initialPopulation: number;
   initialTfr: number;
@@ -13,6 +19,8 @@ export interface SimulationParams {
   endYear: number;
   deathRate: number;
   fertilityChanges: FertilityChangeEvent[];
+  netMigration: number;
+  migrationChanges: MigrationChangeEvent[];
   ageGroups: AgeGroupGender[];
 }
 
@@ -137,11 +145,15 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
     endYear,
     deathRate,
     fertilityChanges,
+    netMigration,
+    migrationChanges,
     ageGroups,
   } = params;
 
   const sortedChanges = [...fertilityChanges].sort((a, b) => a.year - b.year);
+  const sortedMigrationChanges = [...migrationChanges].sort((a, b) => a.year - b.year);
   let currentTfr = initialTfr;
+  let currentMigration = netMigration;
   let { male, female } = toCounts(ageGroups, initialPopulation);
 
   const results: YearData[] = [];
@@ -149,6 +161,8 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
   for (let year = startYear; year <= endYear; year++) {
     const change = sortedChanges.find((c) => c.year === year);
     if (change) currentTfr = change.tfr;
+    const migrationChange = sortedMigrationChanges.find((c) => c.year === year);
+    if (migrationChange) currentMigration = migrationChange.netMigration;
 
     const reproductiveWomen = getReproductiveFemaleCount(ageGroups, female);
     const births = Math.round(reproductiveWomen * (currentTfr / 35));
@@ -182,6 +196,23 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
 
     nextMale[0] += maleBirths;
     nextFemale[0] += femaleBirths;
+
+    const beforeMigrationTotal = sum(nextMale) + sum(nextFemale);
+    if (currentMigration !== 0) {
+      if (beforeMigrationTotal > 0) {
+        for (let i = 0; i < ageGroups.length; i++) {
+          const maleShare = nextMale[i] / beforeMigrationTotal;
+          const femaleShare = nextFemale[i] / beforeMigrationTotal;
+          nextMale[i] = Math.max(0, nextMale[i] + currentMigration * maleShare);
+          nextFemale[i] = Math.max(0, nextFemale[i] + currentMigration * femaleShare);
+        }
+      } else if (currentMigration > 0) {
+        const maleAdd = currentMigration * 0.5;
+        const femaleAdd = currentMigration - maleAdd;
+        nextMale[0] += maleAdd;
+        nextFemale[0] += femaleAdd;
+      }
+    }
 
     const population = Math.max(0, Math.round(sum(nextMale) + sum(nextFemale)));
     const prevPopulation = Math.max(0, Math.round(sum(male) + sum(female)));
