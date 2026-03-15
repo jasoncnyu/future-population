@@ -83,6 +83,18 @@ const Index = () => {
   const selectedSnapshot =
     data.length === 0 ? null : data.find((d) => d.year === selectedYear) ?? data[data.length - 1];
 
+  const upsertFertilityChange = (year: number, tfr: number) => {
+    setFertilityChanges((prev) => {
+      const existing = prev.find((event) => event.year === year);
+      if (existing) {
+        return prev.map((event) => (event.year === year ? { ...event, tfr } : event));
+      }
+      const next = [...prev, { id: crypto.randomUUID(), year, tfr }];
+      return next.sort((a, b) => a.year - b.year);
+    });
+    setSelectedYear(year);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader
@@ -133,13 +145,14 @@ const Index = () => {
             locale={locale}
           />
 
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[3fr_2fr] lg:items-start">
             <SimulatorChart
               data={data}
               fertilityChanges={fertilityChanges}
               locale={locale}
               selectedYear={selectedYear}
               onSelectYear={setSelectedYear}
+              onUpdateTfrChange={upsertFertilityChange}
             />
             {selectedSnapshot && (
               <PopulationPyramid
@@ -147,7 +160,8 @@ const Index = () => {
                 setAgeGroups={() => {}}
                 locale={locale}
                 readOnly
-                title={`Population pyramid · ${selectedSnapshot.year}`}
+                compact
+                title={`${t(locale, "pyramid.populationPyramid")} · ${selectedSnapshot.year}`}
               />
             )}
           </div>

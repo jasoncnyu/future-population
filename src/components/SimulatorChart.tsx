@@ -14,7 +14,7 @@ import type { FertilityChangeEvent } from "@/lib/population-simulator";
 import { formatPopulation } from "@/lib/population-simulator";
 import type { Locale } from "@/lib/i18n";
 import { t } from "@/lib/i18n";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface SimulatorChartProps {
   data: YearData[];
@@ -22,6 +22,7 @@ interface SimulatorChartProps {
   locale: Locale;
   selectedYear?: number | null;
   onSelectYear?: (year: number) => void;
+  onUpdateTfrChange?: (year: number, tfr: number) => void;
 }
 
 export default function SimulatorChart({
@@ -30,9 +31,13 @@ export default function SimulatorChart({
   locale,
   selectedYear,
   onSelectYear,
+  onUpdateTfrChange,
 }: SimulatorChartProps) {
   const rangeRef = useRef<{ min: number; max: number; sign: number } | null>(null);
   const tfrRangeRef = useRef<number | null>(null);
+  const tfrChartRef = useRef<HTMLDivElement>(null);
+  const [draggingYear, setDraggingYear] = useState<number | null>(null);
+  const [hoveringTfrPoint, setHoveringTfrPoint] = useState(false);
 
   if (data.length === 0) return null;
 
@@ -66,13 +71,50 @@ export default function SimulatorChart({
     tfrRangeRef.current = tfrMax + 0.2;
   }
 
+  const roundTfr = (value: number) => Math.round(value * 100) / 100;
+
+  const getTfrFromClientY = (clientY: number) => {
+    const rect = tfrChartRef.current?.getBoundingClientRect();
+    if (!rect) return null;
+    const paddingTop = 5;
+    const paddingBottom = 5;
+    const y = Math.max(paddingTop, Math.min(rect.height - paddingBottom, clientY - rect.top));
+    const plotHeight = Math.max(1, rect.height - paddingTop - paddingBottom);
+    const ratio = 1 - (y - paddingTop) / plotHeight;
+    const max = tfrRangeRef.current ?? 3;
+    return roundTfr(Math.max(0, Math.min(max, ratio * max)));
+  };
+
+  const handleTfrMouseDown = (state: { activeLabel?: number | string; activePayload?: unknown[] }) => {
+    if (!state?.activeLabel) return;
+    const year = typeof state.activeLabel === "number" ? state.activeLabel : Number(state.activeLabel);
+    if (Number.isNaN(year)) return;
+    setDraggingYear(year);
+    const payload = (state.activePayload?.[0] as { payload?: { tfr?: number } } | undefined)?.payload;
+    if (typeof payload?.tfr === "number") {
+      onUpdateTfrChange?.(year, roundTfr(payload.tfr));
+    }
+  };
+
+  const handleTfrMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (draggingYear == null) return;
+    const tfr = getTfrFromClientY(e.clientY);
+    if (tfr == null) return;
+    onUpdateTfrChange?.(draggingYear, tfr);
+  };
+
+  const handleTfrMouseUp = () => {
+    if (draggingYear != null) setDraggingYear(null);
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h3 className="text-sm font-medium text-muted-foreground mb-2">
           {t(locale, "chart.populationTrend")}
         </h3>
-        <div className="h-[350px]">
+        <p className="text-xs text-muted-foreground mb-2">{t(locale, "chart.populationHint")}</p>
+        <div className="h-[380px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data}
@@ -144,9 +186,28 @@ export default function SimulatorChart({
 
       <div>
         <h3 className="text-sm font-medium text-muted-foreground mb-2">{t(locale, "chart.tfrTrend")}</h3>
-        <div className="h-[200px]">
+        <div
+          ref={tfrChartRef}
+          className={`h-[220px] select-none ${
+            draggingYear != null || hoveringTfrPoint
+              ? "cursor-ns-resize [&_.recharts-surface]:cursor-ns-resize [&_.recharts-layer]:cursor-ns-resize [&_.recharts-curve]:cursor-ns-resize [&_.recharts-dot]:cursor-ns-resize"
+              : "cursor-default"
+          }`}
+          onMouseMove={handleTfrMouseMove}
+          onMouseUp={handleTfrMouseUp}
+          onMouseLeave={handleTfrMouseUp}
+        >
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+            <LineChart
+              data={data}
+              margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+              onMouseDown={handleTfrMouseDown}
+              onMouseMove={(state) => {
+                const payload = (state?.activePayload?.[0] as { payload?: { tfr?: number } } | undefined)?.payload;
+                setHoveringTfrPoint(typeof payload?.tfr === "number");
+              }}
+              onMouseLeave={() => setHoveringTfrPoint(false)}
+            >
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
               <XAxis dataKey="year" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
               <YAxis
@@ -170,7 +231,16 @@ export default function SimulatorChart({
                 name={t(locale, "chart.tfr")}
                 stroke="hsl(var(--destructive))"
                 strokeWidth={2}
-                dot={false}
+                dot={(props) => (
+                  <circle
+                    cx={props.cx}
+                    cy={props.cy}
+                    r={2}
+                    fill="hsl(var(--destructive))"
+                    stroke="none"
+                    style={{ cursor: "ns-resize" }}
+                  />
+                )}
               />
               <ReferenceLine
                 y={2.1}
