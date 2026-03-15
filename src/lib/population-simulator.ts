@@ -56,6 +56,9 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
+const MALE_MORTALITY_MULTIPLIER = 1.1;
+const FEMALE_MORTALITY_MULTIPLIER = 0.9;
+
 function mortalityRateForAge(minAge: number): number {
   if (minAge < 5) return 0.004;
   if (minAge < 10) return 0.0006;
@@ -83,6 +86,12 @@ function mortalityRateForAge(minAge: number): number {
 export function getScaledMortalityRate(minAge: number, deathRate: number) {
   const scale = clamp(deathRate / BASE_DEATH_RATE, 0.1, 5);
   return clamp(mortalityRateForAge(minAge) * scale, 0, 0.9);
+}
+
+export function getScaledSexMortalityRate(minAge: number, deathRate: number, sex: "male" | "female") {
+  const base = getScaledMortalityRate(minAge, deathRate);
+  const multiplier = sex === "male" ? MALE_MORTALITY_MULTIPLIER : FEMALE_MORTALITY_MULTIPLIER;
+  return clamp(base * multiplier, 0, 0.9);
 }
 
 function toCounts(ageGroups: AgeGroupGender[], totalPopulation: number) {
@@ -151,10 +160,11 @@ export function simulatePopulation(params: SimulationParams): YearData[] {
     const nextFemale = new Array(female.length).fill(0);
 
     for (let i = 0; i < ageGroups.length; i++) {
-      const rate = getScaledMortalityRate(ageGroups[i].minAge, deathRate);
+      const maleRate = getScaledSexMortalityRate(ageGroups[i].minAge, deathRate, "male");
+      const femaleRate = getScaledSexMortalityRate(ageGroups[i].minAge, deathRate, "female");
 
-      const maleSurvivors = male[i] * (1 - rate);
-      const femaleSurvivors = female[i] * (1 - rate);
+      const maleSurvivors = male[i] * (1 - maleRate);
+      const femaleSurvivors = female[i] * (1 - femaleRate);
       deaths += (male[i] - maleSurvivors) + (female[i] - femaleSurvivors);
 
       const outflowMale = i === ageGroups.length - 1 ? 0 : maleSurvivors / 5;

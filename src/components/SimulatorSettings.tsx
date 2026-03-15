@@ -8,6 +8,7 @@ import { Plus, Trash2 } from "lucide-react";
 import {
   MORTALITY_AGE_BANDS,
   getScaledMortalityRate,
+  getScaledSexMortalityRate,
   type FertilityChangeEvent,
 } from "@/lib/population-simulator";
 import PopulationPyramid, { type AgeGroupGender } from "./PopulationPyramid";
@@ -106,6 +107,7 @@ export default function SimulatorSettings({
                   </AccordionTrigger>
                 </div>
                 <Slider
+                  className="mt-2"
                   value={[deathRate]}
                   onValueChange={([v]) => setDeathRate(v)}
                   min={0}
@@ -118,16 +120,20 @@ export default function SimulatorSettings({
                       {t(locale, "settings.deathRateHelp")}
                     </p>
                     <div className="overflow-hidden rounded-md border border-border">
-                      <div className="grid grid-cols-2 bg-muted/60 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                      <div className="grid grid-cols-3 bg-muted/60 px-3 py-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                         <span>{t(locale, "settings.mortalityAgeBand")}</span>
-                        <span className="text-right">{t(locale, "settings.mortalityAppliedRate")}</span>
+                        <span className="text-right">{t(locale, "pyramid.male")}</span>
+                        <span className="text-right">{t(locale, "pyramid.female")}</span>
                       </div>
                       <div className="divide-y divide-border bg-background">
                         {MORTALITY_AGE_BANDS.map((band) => (
-                          <div key={band.label} className="grid grid-cols-2 px-3 py-2 text-xs text-foreground">
+                          <div key={band.label} className="grid grid-cols-3 px-3 py-2 text-xs text-foreground">
                             <span>{band.label}</span>
                             <span className="text-right">
-                              {(getScaledMortalityRate(band.minAge, deathRate) * 100).toFixed(2)}%
+                              {(getScaledSexMortalityRate(band.minAge, deathRate, "male") * 100).toFixed(2)}%
+                            </span>
+                            <span className="text-right">
+                              {(getScaledSexMortalityRate(band.minAge, deathRate, "female") * 100).toFixed(2)}%
                             </span>
                           </div>
                         ))}
