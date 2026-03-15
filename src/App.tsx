@@ -13,6 +13,7 @@ import { defaultLocale, normalizeLocale, type Locale } from "@/lib/i18n";
 import { detectLocaleAndCountry, storeCountry } from "@/lib/geo";
 import AppLayout from "@/layouts/AppLayout";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
       <Analytics />
+      <SpeedInsights />
     </TooltipProvider>
   </QueryClientProvider>
 );
