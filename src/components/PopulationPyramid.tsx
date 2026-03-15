@@ -21,6 +21,7 @@ interface PopulationPyramidProps {
   locale: Locale;
   readOnly?: boolean;
   title?: string;
+  compact?: boolean;
 }
 
 export const DEFAULT_AGE_GROUPS: AgeGroupGender[] = [
@@ -53,6 +54,7 @@ export default function PopulationPyramid({
   locale,
   readOnly,
   title,
+  compact,
 }: PopulationPyramidProps) {
   const [draft, setDraft] = useState<AgeGroupGender[]>(ageGroups);
   const [error, setError] = useState<string | null>(null);
@@ -147,9 +149,32 @@ export default function PopulationPyramid({
     [draft]
   );
 
+  const dragRef = useRef<{
+    index: number;
+    side: "male" | "female";
+    startX: number;
+    startValue: number;
+  } | null>(null);
+
   const handleMouseDown = (index: number, side: "male" | "female") => {
     if (readOnly) return;
     setDragging({ index, side });
+    const field = side === "male" ? "malePercent" : "femalePercent";
+    dragRef.current = {
+      index,
+      side,
+      startX: 0,
+      startValue: draft[index][field],
+    };
+    if (containerRef.current) {
+      const barContainer = containerRef.current.querySelector(
+        `[data-bar="${index}-${side}"]`
+      ) as HTMLElement;
+      if (barContainer) {
+        const rect = barContainer.getBoundingClientRect();
+        dragRef.current.startX = side === "male" ? rect.right : rect.left;
+      }
+    }
   };
 
   const handleMouseMove = useCallback(
@@ -161,24 +186,20 @@ export default function PopulationPyramid({
       ) as HTMLElement;
       if (!barContainer) return;
 
-      const rect = barContainer.getBoundingClientRect();
-      const maxWidth = rect.width;
+      const drag = dragRef.current;
+      if (!drag || drag.index !== dragging.index || drag.side !== dragging.side) return;
 
-      let distance: number;
-      if (dragging.side === "male") {
-        distance = rect.right - e.clientX;
-      } else {
-        distance = e.clientX - rect.left;
-      }
+      const deltaX = dragging.side === "male" ? drag.startX - e.clientX : e.clientX - drag.startX;
+      const nextValue = drag.startValue + deltaX * 0.01;
 
-      const percentage = Math.round(((distance / maxWidth) * 40) * 100) / 100;
-      redistributeValues(dragging.index, dragging.side, percentage);
+      redistributeValues(dragging.index, dragging.side, nextValue);
     },
-    [dragging, redistributeValues]
+    [dragging, redistributeValues, readOnly]
   );
 
   const handleMouseUp = () => {
     setDragging(null);
+    dragRef.current = null;
   };
 
   const handleInputChange = (index: number, field: "malePercent" | "femalePercent", value: number) => {
@@ -216,10 +237,17 @@ export default function PopulationPyramid({
   ];
 
   const isDirty = JSON.stringify(draft) !== JSON.stringify(ageGroups);
+  const isCompact = Boolean(compact);
+  const rowHeightClass = isCompact ? "h-7" : "h-8";
+  const rowGapClass = isCompact ? "gap-0.5" : "gap-1";
+  const inputClass = isCompact ? "h-5 text-[10px]" : "h-6 text-[11px]";
+  const headerPaddingClass = isCompact ? "pb-2" : "pb-3";
+  const stackGapClass = isCompact ? "space-y-2" : "space-y-3";
+  const rowStackGapClass = isCompact ? "space-y-0.5" : "space-y-1";
 
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader className={headerPaddingClass}>
         <CardTitle className="text-lg">{title ?? t(locale, "pyramid.title")}</CardTitle>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span className="text-sky-500 font-medium">
@@ -233,10 +261,10 @@ export default function PopulationPyramid({
           {readOnly ? `Total ${totalPercent}%` : `${t(locale, "pyramid.instructions")} · Total ${totalPercent}%`}
         </p>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className={stackGapClass}>
         <div
           ref={containerRef}
-          className="space-y-1 select-none"
+          className={`${rowStackGapClass} select-none`}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
@@ -245,12 +273,12 @@ export default function PopulationPyramid({
             .map((group, index) => ({ group, index }))
             .reverse()
             .map(({ group, index }) => (
-            <div key={`${group.label}-${index}`} className="flex items-center gap-1 h-8">
+            <div key={`${group.label}-${index}`} className={`flex items-center ${rowGapClass} ${rowHeightClass}`}>
               <Input
                 type="number"
                 value={group.malePercent}
                 onChange={(e) => handleInputChange(index, "malePercent", Number(e.target.value))}
-                className="w-14 h-6 text-[11px] text-center p-0.5"
+                className={`w-14 ${inputClass} text-center p-0.5`}
                 min={0}
                 max={100}
                 step={0.01}
@@ -281,7 +309,7 @@ export default function PopulationPyramid({
                 type="number"
                 value={group.femalePercent}
                 onChange={(e) => handleInputChange(index, "femalePercent", Number(e.target.value))}
-                className="w-14 h-6 text-[11px] text-center p-0.5"
+                className={`w-14 ${inputClass} text-center p-0.5`}
                 min={0}
                 max={100}
                 step={0.01}
